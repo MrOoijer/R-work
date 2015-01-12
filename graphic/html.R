@@ -22,14 +22,13 @@ Switching from tabs a couple of times usually wakes it up.</em><p>
 <h5>Colophon</h5>
 <p>This application was conceived and written in november 2014. A similar application
 (see [4] in the details tab) inspired me to make this interactive version of an R library I had written.</p>
-<p>The current version is 0.4.0 - dated 2014-12-22, 18:00 hrs. </p>
+<p>The current version is 0.4.1 - dated 2015-01-07, 18:00 hrs. </p>
 <h5>Data is current</h5><p>The data is usually uploaded fresh and brought up-to-date for the latest version of the applet.
 See the details tab for the sources used.</p>
 <h5>Plans for future versions</h5><ul>
 <li>More data</li>
 <li>Forecasts</li>
 <li>Inspection of values</li>
-<li>Source code to Github</li>
 <li></li>
 </ul>
 <hr>
@@ -230,4 +229,6 @@ In a future version of this applet I will show more of the technical details, fo
 [4] http://contextearth.com/2013/10/26/csalt-model/</p>
 </small>
 
+<h5>R Sources</h5>
+<p>The sources and data can be found <a href='https://github.com/MrOoijer/R-work'>in my Github. </a></p>
 "

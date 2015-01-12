@@ -1,5 +1,5 @@
 library(splines)
-library(graphics)
+
 # Routines that are needed for server.R
 #
 # ------ layout ----------------------------------
@@ -14,7 +14,7 @@ ts.to.df <- function(x){
 }
 
 cpalet= list( 
-   rand="#EFF3FF" #"#FEE6CE"
+   rand="#EFF3FF"
    , titel="#7F2704"
    , as="#4D4D4D"
    , box= "#BABABA"
@@ -24,19 +24,6 @@ cpalet= list(
    , vulkleur= c("#8C2D0428", "#D9480128", "#F1691328", "#FD8D3C28", "#FDAE6B28"
                  , "#08459448", "#2171B548", "#4292C648", "#6BAED648", "#9ECAE148")
 )
-# cpalet= list( 
-#    rand="#FDDBC7"
-#    , titel="#67001F"
-#    , as="#4D4D4D"
-#    , box= "#BABABA"
-#    , binnen="#FFFFFF"
-#    , lijnkleur=c("#67001F", "#B2182B", "#D6604D", "#F4A582", "#FDDBC7")
-#    , vulkleur= c("#67001F28"
-#                  , "#B2182B28"
-#                  , "#D6604D28"
-#                  , "#F4A58228"
-#                  , "#FDDBC728")
-# )
 
 pretty.legend <-function(
    kleur=c(1,2)
@@ -256,7 +243,7 @@ preRS <- function(this.lm){
 # ------ load data --------
 # 
 load("./data/startData.Rda")
-end.y=end.y[1]+(end.y[2]-1)/12
+end.y=2016 #end.y[1]+(end.y[2]-1)/12
 
 doen.tcr=0
 
@@ -321,14 +308,14 @@ doen<-function(
    cel.keuze=NULL,
    seas.keuze=FALSE,
    start.year=1880,
-   end.year= 2010, 
+   end.year= 2016, 
    norm.doen=TRUE,
    show.se=TRUE,
    x.lim=c(1880,2015), 
    predict=FALSE
 ){
    # print(c(start.year, end.year, end.y))
-   if (end.year >= 2010) end.year= end.y
+   #if (end.year >= 2010) end.year= end.y
    if (data.keuze==1) model<-gss.ts
    if (data.keuze==2) model<-ncd.ts
    if (data.keuze==3) model<-hc4.ts
@@ -339,6 +326,7 @@ doen<-function(
    if (data.keuze==8) model<-ghc.ts
    if (data.keuze==9) model<-rss.ts
    if (data.keuze==10) model<-uah.ts
+   if (data.keuze==11) model<-bkl.ts
    end.y1=end(model)[1]+(end(model)[2]-1)/12
    end.y=min(end.year, end.y1)+0.0001
    yspan=y.lim
@@ -351,7 +339,7 @@ doen<-function(
    if (smooth.keuze.b>0) model<-stl(model, s.window=max(12, smooth.keuze.b), t.window=smooth.keuze.b)$time.series[,2]
    model.str<-c("GISS", "NOAA", "Hadcrut 4.3", "JMA", "C&W"
                 , "Combined series", "CRUTEM (land only)", "GISS (land only)"
-                , "RSS (satellite)", "UAH (satellite)")[data.keuze]
+                , "RSS (satellite)", "UAH (satellite)", "BEST")[data.keuze]
    year<- as.numeric(time(model))
    
    sh<-sin(pi*year); ch<-cos(pi*year);

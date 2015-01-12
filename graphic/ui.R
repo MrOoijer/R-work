@@ -20,10 +20,10 @@ tabPanel("Tutorial",
                                       label = "",
                                       choices = c("GISS", "NOAA",
                                                   "HADcrut", "JMA", "C&W", "Combined", "CRUTEM (land)", "GISS (land)"
-                                                  , "RSS (satellite)", "UAH (satellite)"),
+                                                  , "RSS (satellite)", "UAH (satellite)", "BEST"),
                                       selected = "GISS")                                                                              
                           , HTML("<div style='border: 1px solid lightgrey; padding:5px;'>")                                             
-                          , sliderInput("x.lim2", "Range of years", 1880, 2015, value = c(1880, 2015), format = "####.##", )                                
+                          , sliderInput("x.lim2", "Range of years", 1880, 2016, value = c(1880, 2015), format = "####.##", )                                
                           , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
                           , sliderInput("y.lim2", "Vertical axis", -1.4, 0.8, value = c(-1.1, 0.6), format = "#.#", )                                
                           , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
@@ -44,7 +44,7 @@ tabPanel("2. Influence of CO2 levels",
            , fluidRow(
              column(3, wellPanel(
                HTML("<div style='border: 1px solid lightgrey; padding:5px;'>")
-                , sliderInput("start.year2", "Regression Period", 1880, 2014, value = c(1880, 2014), format = "####.##", )                                
+                , sliderInput("start.year2", "Regression Period", 1880, 2015, value = c(1880, 2015), format = "####.##", )                                
                 , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
                 , sliderInput("smooth.keuze.b2", "Smooth Data", 0, 60, value = 0, round=TRUE)
                 , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
@@ -160,10 +160,10 @@ tabPanel("6. All Combined"
                            label = "",
                            choices = c("GISS", "NOAA",
                                        "HADcrut", "JMA", "C&W", "Combined", "CRUTEM (land)", "GISS (land)"
-                                       , "RSS (satellite)", "UAH (satellite)"),
+                                       , "RSS (satellite)", "UAH (satellite)", "BEST"),
                            selected = "GISS")                                                                              
                , HTML("<h6>Appearance</h6><div style='border: 1px solid lightgrey; padding:5px;'>")                                             
-               , sliderInput("x.lim6", "Range of years", 1880, 2015, value = c(1880, 2015), format = "####.##", )                                
+               , sliderInput("x.lim6", "Range of years", 1880, 2016, value = c(1880, 2015), format = "####.##", )                                
                , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
                , sliderInput("y.lim6", "Vertical axis", -1.4, 0.8, value = c(-1.1, 0.6), format = "#.#", )                                
                , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
@@ -173,7 +173,7 @@ tabPanel("6. All Combined"
                ))
              , column(4, wellPanel(
                HTML("<div style='border: 1px solid lightgrey; padding:5px;'>")
-               , sliderInput("start.year6", "Regression Period", 1880, 2014, value = c(1880, 2014), format = "####.##", )                                
+               , sliderInput("start.year6", "Regression Period", 1880, 2015, value = c(1880, 2015), format = "####.##", )                                
                , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
                , sliderInput("smooth.keuze.b6", "Smooth Data", 0, 60, value = 0, round=TRUE)
                , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
@@ -218,13 +218,13 @@ well= TRUE, widths = c(3, 9)
                                               label = "",
                                               choices = c("GISS", "NOAA",
                                                           "HADcrut", "JMA", "C&W", "Combined", "CRUTEM (land)", "GISS (land)"
-                                                          , "RSS (satellite)", "UAH (satellite)"),
+                                                          , "RSS (satellite)", "UAH (satellite)", "BEST"),
                                               selected = "GISS") 
                               ), wellPanel(
                                 checkboxInput("cbi001", "Viewing Options"),
                                 conditionalPanel( condition = "input.cbi001 == true", 
                                                   HTML("<div style='border: 1px solid lightgrey; padding:5px;'>")
-                                                  , sliderInput("x.lim", "Range of years", 1880, 2015, value = c(1880, 2015), format = "####.##", )                                
+                                                  , sliderInput("x.lim", "Range of years", 1880, 2016, value = c(1880, 2015), format = "####.##", )                                
                                                   , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
                                                   , sliderInput("y.lim", "Vertical axis", -1.4, 0.8, value = c(-1.1, 0.6), format = "#.#", )                                
                                                   , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
@@ -237,7 +237,7 @@ well= TRUE, widths = c(3, 9)
                                 checkboxInput("cbi002", "Regression Options"),
                                 conditionalPanel( condition = "input.cbi002 == true" 
                                                   , HTML("<div style='border: 1px solid lightgrey; padding:5px;'>")
-                                                  , sliderInput("start.year", "Regression Period", 1880, 2015, value = c(1880, 2015), format = "####.##", )                                
+                                                  , sliderInput("start.year", "Regression Period", 1880, 2016, value = c(1880, 2015), format = "####.##", )                                
                                                   , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
                                                   , sliderInput("smooth.keuze.b", "Smooth Data", 0, 60, value = 0, round=TRUE)
                                                   , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
@@ -329,7 +329,7 @@ well= TRUE, widths = c(3, 9)
 #                                              label = "",
 #                                              choices = c("GISS", "NOAA",
 #                                                          "HADcrut", "JMA", "C&W", "Combined", "CRUTEM (land)", "GISS (land)"
-#                                                          , "RSS (satellite)", "UAH (satellite)"),
+#                                                          , "RSS (satellite)", "UAH (satellite)", "BEST"),
 #                                              selected = "GISS")                                                                              
 #                                  , HTML("<h6>Appearance</h6><div style='border: 1px solid lightgrey; padding:5px;'>")                                             
 #                                  , sliderInput("x.lim.fc", "Range of years", 1880, 2100, value = c(1880, 2050), format = "####.##", )                                
@@ -337,7 +337,7 @@ well= TRUE, widths = c(3, 9)
 #                                  , sliderInput("y.lim.fc", "Vertical axis", -1.5, 3, value = c(-1.1, 2), format = "#.#", )                                
 #                                  , HTML("</div>")
 #                                  , HTML("<h6>Regression</h6><div style='border: 1px solid lightgrey; padding:5px;'>")                                             
-#                                  , sliderInput("start.year.fc", "Range of years", 1880, 2015, value = c(1880, 2015), format = "####.##", )                                
+#                                  , sliderInput("start.year.fc", "Range of years", 1880, 2016, value = c(1880, 2015), format = "####.##", )                                
 #                                  , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
 #                                  , sliderInput("smooth.keuze.b.fc", "Smoothing factor", 0, 60, step=3, value = 0, round=TRUE)
 #                                  , HTML("</div>")                                 

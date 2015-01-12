@@ -6,7 +6,7 @@ shinyServer(
     output$map <- renderPlot({
       data.keuze <- which (input$data.keuze == c("GISS", "NOAA",
                                                    "HADcrut", "JMA", "C&W", "Combined", "CRUTEM (land)", "GISS (land)"
-                                                 , "RSS (satellite)", "UAH (satellite)"))
+                                                 , "RSS (satellite)", "UAH (satellite)", "BEST"))
       start.year=input$start.year[1]
       end.year=input$start.year[2]
       x.lim=input$x.lim
@@ -53,7 +53,7 @@ shinyServer(
     output$map2<-renderPlot({
       data.keuze <- which (input$data.keuze2 == c("GISS", "NOAA",
                                                   "HADcrut", "JMA", "C&W", "Combined", "CRUTEM (land)", "GISS (land)"
-                                                  , "RSS (satellite)", "UAH (satellite)"))
+                                                  , "RSS (satellite)", "UAH (satellite)", "BEST"))
       smooth.keuze=input$smooth.keuze2
       x.lim=input$x.lim2
       y.lim=input$y.lim2
@@ -183,7 +183,7 @@ shinyServer(
       
       data.keuze <- which (input$data.keuze6 == c("GISS", "NOAA",
                                                  "HADcrut", "JMA", "C&W", "Combined", "CRUTEM (land)", "GISS (land)"
-                                                 , "RSS (satellite)", "UAH (satellite)"))
+                                                 , "RSS (satellite)", "UAH (satellite)", "BEST"))
       
        doen(start.year=input$start.year6[1]
             , end.year= input$start.year6[2]          
@@ -209,7 +209,7 @@ shinyServer(
       output$map.fc<-renderPlot({
         data.keuze <- which (input$data.keuze.fc == c("GISS", "NOAA",
                                                     "HADcrut", "JMA", "C&W", "Combined", "CRUTEM (land)", "GISS (land)"
-                                                    , "RSS (satellite)", "UAH (satellite)"))
+                                                    , "RSS (satellite)", "UAH (satellite)", "BEST"))
         
         doen( start.year=input$start.year.fc[1]
               , end.year= input$start.year.fc[2]
