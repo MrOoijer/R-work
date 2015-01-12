@@ -1,0 +1,46 @@
+Data sources
+
+
+Hadcrut 4
+http://www.metoffice.gov.uk/hadobs/hadcrut4/data/current/time_series/HadCRUT.4.3.0.0.monthly_ns_avg.txt
+Giss
+http://data.giss.nasa.gov/gistemp/tabledata_v3/GLB.Ts+dSST.txt
+Noaa
+http://www.ncdc.noaa.gov/cag/time-series/global/globe/land_ocean/p12/12/1880-2014.csv 
+C&W
+http://www-users.york.ac.uk/~kdc3/papers/coverage2013/had4_krig_v2_0_0.txt
+JMA
+http://ds.data.jma.go.jp/tcc/tcc/products/gwp/temp/ann_wld.html [note]
+
+
+sunspots
+http://sidc.be/silso/INFO/monssninfocsv.php
+http://solarscience.msfc.nasa.gov/greenwch/spot_num.txt
+tsi
+ftp://ftp.pmodwrc.ch/pub/data/irradiance/composite/DataPlots/ext_composite_42_64_1410.dat [note]
+plus reconstructie voor 1976
+
+
+amo
+http://www.esrl.noaa.gov/psd/data/correlation/amon.us.long.data
+
+enso
+http://www.esrl.noaa.gov/psd/people/cathy.smith/best/enso.ts.1mn.txt
+soi
+http://www.cgd.ucar.edu/cas/catalog/climind/SOI.signal.ascii
+
+vol
+http://climexp.knmi.nl/data/isaod_gl.dat
+ftp://ftp.ncdc.noaa.gov/pub/data/paleo/climate_forcing/volcanic_aerosols/crowley2013/ICI5_030N_AOD_c.txt
+
+co2
+ftp://aftp.cmdl.noaa.gov/products/trends/co2/co2_mm_mlo.txt
+plus reconstructie uit http://climexp.knmi.nl/data/iRCP45_CO2.dat
+
+
+pdo
+http://www.ncdc.noaa.gov/teleconnections/pdo/data.csv
+
+lod
+http://datacenter.iers.org/eop/-/somos/5Rgv/latest/214
+http://hpiers.obspm.fr/eoppc/series/longterm/jpl_c.eop
