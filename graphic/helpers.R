@@ -14,19 +14,21 @@ ts.to.df <- function(x){
 }
 
 cpalet= list( 
-   rand="#EFF3FF"
-   , titel="#7F2704"
-   , as="#4D4D4D"
-   , box= "#BABABA"
-   , binnen="#EFF3FF"
-   , lijnkleur=c("#8C2D04", "#D94801", "#F16913", "#FD8D3C", "#FDAE6B"
-                 , "#084594", "#2171B5", "#4292C6", "#6BAED6", "#9ECAE1")
-   , vulkleur= c("#8C2D0428", "#D9480128", "#F1691328", "#FD8D3C28", "#FDAE6B28"
-                 , "#08459448", "#2171B548", "#4292C648", "#6BAED648", "#9ECAE148")
+   rand="#cad4e8"
+   , titel="#8b0000"
+   , as="#d84467"
+   , box= "#ffccdc"
+   , binnen="#fffafa"
+   , lijnkleur=c('#8b0000','#b71c39','#d84467','#f07092','#ff9cb8','#ffccdc',
+                 '#fffafa',
+                 '#cad4e8','#a5abd6','#8481c3','#6359b1','#40319e','#00008b')
+   , vulkleur= c('#8b000028','#b71c3928','#d8446728','#f0709228','#ff9cb828','#ffccdc28',
+                 '#fffafa28',
+                 '#cad4e828','#a5abd628','#8481c328','#6359b128','#40319e28','#00008b28')
 )
 
 pretty.legend <-function(
-   kleur=c(1,2)
+   kleur=c(1,13)
    , ...){
    if (hasArg(lwd)){
       legend("topleft" , inset=c(+0.01, 0), xpd=TRUE # moves - this is for pt 16 h=350
@@ -394,13 +396,13 @@ doen<-function(
    my.se= se.autocor(model.fit)
    if (show.se){
       pretty.plot(type="a", data.frame(time(model), model.fit$fitted+my.se, model.fit$fitted-my.se),
-                  , ccloc=5, kleur=6
+                  , ccloc=5, kleur=13
                   , ylim=yspan #, yat=seq(-1.2, 2.4, by=0.6)
                   , xlim=c(x.lim[1], x.lim[2]+0.3)
                   , main=sprintf("%s Temperature Anomaly (Baseline 1986-2005)%s", model.str, add.txt))
-      pretty.plot(ts.to.df(model.original), kleur= ifelse(smooth.keuze>2,5,4), type="p", add=TRUE)
+      pretty.plot(ts.to.df(model.original), kleur= ifelse(smooth.keuze>2,5,3), type="p", add=TRUE)
    }else{
-      pretty.plot(ts.to.df(model.original), kleur= ifelse(smooth.keuze>2,5,4), type="p", ccloc=5
+      pretty.plot(ts.to.df(model.original), kleur= ifelse(smooth.keuze>2,5,3), type="p", ccloc=5
                   , ylim=yspan #, yat=seq(-1.2, 2.4, by=0.6)
                   , xlim=c(x.lim[1], x.lim[2]+0.3)
                   , main=sprintf("%s Temperature Anomaly (Baseline 1986-2005)%s", model.str, add.txt))
@@ -408,7 +410,7 @@ doen<-function(
    if (smooth.keuze>2) pretty.plot(ts.to.df(model.display), kleur=3, type="l", add=T, lwd=2)
    doen.tcr<<-log(2) * model.fit$coef['co2']
    if (show.reg){
-      pretty.plot(data.frame(time(model), model.fit$fitted), lwd= 2, kleur=6, add=T)
+      pretty.plot(data.frame(time(model), model.fit$fitted), lwd= 2, kleur=13, add=T)
       if (model.keuze== 1) {
          ci=se.autoco2(model.fit, model.mode=model.mode)
          ttxt=paste0(sprintf("Fit: preRS= %2.4f\n", preRS(model.fit)),
@@ -433,7 +435,7 @@ doen<-function(
                   , labels=ttxt )
       first.txt<- "Data"
       if (smooth.keuze.b>0) first.txt<- sprintf("Data [%d months Smoothed]", smooth.keuze.b)
-      pretty.legend(lwd=c(3,3), kleur=c(4,7), c(first.txt, "Fitted Model"))
+      pretty.legend(lwd=c(3,3), kleur=c(3,13), c(first.txt, "Fitted Model"))
    }
    if(predict) {
       period.length=round(x.lim[2]-end.year, 0)
@@ -483,18 +485,15 @@ my.predict <- function( start.year=1880
 
    f<-predict(model.fit, newdata=nd)
    diff=0
-#    print(diff<-head(f, 1)-tail(model.fit$fit, 1)); print(end.year)
-#    print(head(nd));print(tail(model.fit$model));print(tail(model.fit$fit))
-#    f <-f-diff
    nd$co2<-co2.l
    f.l<-predict(model.fit, newdata=nd)
    nd$co2<-co2.u
    f.u<-predict(model.fit, newdata=nd)
-   pretty.plot(add=T, kleur=6, type="a"
+   pretty.plot(add=T, kleur=13, type="a"
                , data.frame(time(co2), sigma+f.u-diff, f.l-sigma-diff))
                
-   pretty.plot(kleur=6, add=T, ts(f, start=end.year, freq=12), lwd=2)
-   pretty.plot(kleur=8, add=T, ts(sigma+f.u-diff, start=end.year, freq=12))
-   pretty.plot(kleur=8, add=T, ts(-sigma+f.l-diff, start=end.year, freq=12))
+   pretty.plot(kleur=13, add=T, ts(f, start=end.year, freq=12), lwd=2)
+   pretty.plot(kleur=11, add=T, ts(sigma+f.u-diff, start=end.year, freq=12))
+   pretty.plot(kleur=11, add=T, ts(-sigma+f.l-diff, start=end.year, freq=12))
    
 }

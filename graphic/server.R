@@ -235,5 +235,67 @@ shinyServer(
     
     
     output$Sources<-renderTable(source_table)
+    
+    output$down <-downloadHandler(
+      
+      filename= function(){"thisplot.png"}
+      , content= function(file){
+        
+        png(file,width = 800,height = 533,type = "cairo")
+        # plotting function as main
+        data.keuze <- which (input$data.keuze == c("GISS", "NOAA",
+                                                   "HADcrut", "JMA", "C&W", "Combined", "CRUTEM (land)", "GISS (land)"
+                                                   , "RSS (satellite)", "UAH (satellite)", "BEST"))
+        start.year=input$start.year[1]
+        end.year=input$start.year[2]
+        x.lim=input$x.lim
+        smooth.keuze=input$smooth.keuze
+        smooth.keuze.b=input$smooth.keuze.b
+        seas.keuze=input$cb02
+        co2.lag=input$co2.lag
+        y.lim=input$y.lim
+        ssp.lag=-1
+        if (input$cba004) ssp.lag=input$ssp.lag
+        amo.lag= -1
+        if (input$cba002) amo.lag=input$amo.lag
+        ens.lag= -1
+        if (input$cba001) ens.lag=input$ens.lag
+        lod.lag=-1
+        if (input$cba006)lod.lag=input$lod.lag
+        vol.lag=-1
+        if (input$cba005)vol.lag=input$vol.lag
+        pdo.lag=-1
+        if (input$cba003)pdo.lag=input$pdo.lag
+        show.se=input$cb00
+        model.keuze= which(input$trend == c("co2", "linear", "spline"))
+        cel.keuze=as.numeric(input$boxID)
+        
+        doen(data.keuze=data.keuze
+             , model.keuze=model.keuze
+             , start.year=start.year
+             , end.year= end.year
+             , smooth.keuze=smooth.keuze
+             , smooth.keuze.b=smooth.keuze.b
+             , co2.lag=co2.lag
+             , ssp.lag=ssp.lag
+             , amo.lag=amo.lag
+             , soi.lag=ens.lag
+             , lod.lag=lod.lag
+             , vol.lag=vol.lag
+             , pdo.lag=pdo.lag
+             , cel.keuze= cel.keuze
+             , seas.keuze=seas.keuze
+             , y.lim=y.lim
+             , x.lim=x.lim
+             , show.se=show.se
+        )
+        
+        
+        dev.off()
+        
+      }
+      
+      
+    )
   }
 )

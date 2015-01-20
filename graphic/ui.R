@@ -299,7 +299,7 @@ well= TRUE, widths = c(3, 9)
                                      To instantly change the diagram, use the sliders and buttons from the side bars.
                                      For instructions use the Step by Step Tutorial.</p><hr>")               
                                      , plotOutput("map", height = 533, width=800)
-                                     #                 HTML(paste0("<b>TCR = ", textOutput("tcr", inline=TRUE), "</b>")),
+                                     , downloadButton(outputId="down", label="Download this graph")
                                      , HTML("<hr><p>Copyright by Jan van Rongen, 2014-2015.</p>")
                               )
                             )
