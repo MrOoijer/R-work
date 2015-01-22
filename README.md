@@ -3,7 +3,7 @@ R working directory
 
 ### graphic
 
-Shiny application for global temparature graphs
+Shiny application for global temparature graphs - see https://mrooijer.shinyapps.io/graphic/
 
 ### openCBS
 
