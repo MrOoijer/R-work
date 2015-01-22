@@ -27,10 +27,10 @@ if(!testVlag) pretty.start(sprintf("./afbeelding/werkloos_%s.png", format(Sys.ti
      650, 450, palet=2) else cpalet<-cpalet2
 
 
-pretty.plot(ts_to_df(a), kleur=4, ylab="%"
+pretty.plot(a, kleur=4, ylab="%"
             , main="Werkloosheid jong vs oud\nNederlandse definitie - trend", ylim=c(0,18)
             , source="Bron: Cbs Open Data Portal 2014")
-pretty.plot(ts_to_df(trend_jeugd), add=TRUE, kleur=1, lwd=3)
+pretty.plot(trend_jeugd, add=TRUE, kleur=1, lwd=3)
 
 werk_oud<-maand_werkloosheid_tabel[
   maand_werkloosheid_tabel$Geslacht_C == "Totaal" &
@@ -41,8 +41,8 @@ b<-stl(a, s.window=perVlag, t.window=tVlag)
 b<-b$time.series
 trend_tot<-b[,2]
 
-pretty.plot(ts_to_df(a), add=TRUE, kleur=4)
-pretty.plot(ts_to_df(trend_tot), add=TRUE, kleur=2, lwd=3)
+pretty.plot(a, add=TRUE, kleur=4)
+pretty.plot(trend_tot, add=TRUE, kleur=2, lwd=3)
 pretty.legend(kleur=c(1, 2), lwd=3, 
               c("15-25 jaar", "45-65 jaar")
 )
@@ -65,11 +65,11 @@ b<-stl(a, s.window=perVlag, t.window=tVlag)
 b<-b$time.series
 trend_tot<-b[,2]
 
-pretty.plot(ts_to_df(a), kleur=4, ylab="aantal * 1000"
+pretty.plot(a, kleur=4, ylab="aantal * 1000"
             , main="Werkloosheid absoluut van allen \nAfgezet tegen beroepsbevolking - 7000"
             , ylim=c(200,1000)
             , source="Bron: Cbs Open Data Portal 2014")
-pretty.plot(ts_to_df(trend_tot), add=TRUE, kleur=2, lwd=3)
+pretty.plot(trend_tot, add=TRUE, kleur=2, lwd=3)
 
 #beroepsbevolking
 werk_zaam<-maand_werkloosheid_tabel[
@@ -80,8 +80,8 @@ b<-stl(a, s.window=perVlag, t.window=tVlag)
 b<-b$time.series
 trend_zaam<-b[,2]
 
-pretty.plot(ts_to_df(a), add=TRUE, kleur=4)
-pretty.plot(ts_to_df(trend_zaam), add=TRUE, kleur=4, lwd=3)
+pretty.plot(a, add=TRUE, kleur=4)
+pretty.plot(trend_zaam, add=TRUE, kleur=4, lwd=3)
 
 pretty.legend(kleur=c(4, 2), lwd=3, 
               c( "beroepsbevolking", "totaal werkloos"))
@@ -104,11 +104,11 @@ if(!testVlag) pretty.start(sprintf("./afbeelding/werkloos_abs_jeugd_%s.png", for
                            650, 450, palet=2) else cpalet<-cpalet2
 
 
-pretty.plot(ts_to_df(a), kleur=4, ylab="aantal * 1000"
+pretty.plot(a, kleur=4, ylab="aantal * 1000"
             , main="Werkloosheid absoluut van jeugd\nAfgezet tegen beroepsbevolking - 600"
             , ylim=c(0,400)
             , source="Bron: Cbs Open Data Portal 2014")
-pretty.plot(ts_to_df(trend_jeugd), add=TRUE, kleur=2, lwd=3)
+pretty.plot(trend_jeugd, add=TRUE, kleur=2, lwd=3)
 
 #beroepsbevolking
 werk_zaam<-maand_werkloosheid_tabel[
@@ -119,8 +119,8 @@ b<-stl(a, s.window=perVlag, t.window=tVlag)
 b<-b$time.series
 trend_zaam<-b[,2]
 
-pretty.plot(ts_to_df(a), add=TRUE, kleur=4)
-pretty.plot(ts_to_df(trend_zaam), add=TRUE, kleur=4, lwd=3)
+pretty.plot(a, add=TRUE, kleur=4)
+pretty.plot(trend_zaam, add=TRUE, kleur=4, lwd=3)
 
 pretty.legend(kleur=c(4, 2), lwd=3, 
               c( "beroepsbevolking", "totaal werkloos"))
@@ -144,19 +144,19 @@ if(!testVlag) pretty.start(sprintf("./afbeelding/werkloos_sexe_%s.png", format(S
                            650, 450, palet=2) else cpalet<-cpalet2
 
 
-pretty.plot(ts_to_df(a), kleur=4, ylab="%"
+pretty.plot(a, kleur=4, ylab="%"
             , main="Werkloosheid jongeren \n sexe"
             , ylim=c(0,20)
             , source="Bron: Cbs Open Data Portal 2014")
-pretty.plot(ts_to_df(trend_tot), add=TRUE, kleur=1, lwd=3)
+pretty.plot(trend_tot, add=TRUE, kleur=1, lwd=3)
 
 a<-ts(werk_man[,2], start=2003, freq=12)
 b<-stl(a, s.window=perVlag, t.window=tVlag)
 b<-b$time.series
 trend_tot<-b[,2]
 
-pretty.plot(ts_to_df(a), kleur=4, add=TRUE)
-pretty.plot(ts_to_df(trend_tot), add=TRUE, kleur=2, lwd=3)
+pretty.plot(a, kleur=4, add=TRUE)
+pretty.plot(trend_tot, add=TRUE, kleur=2, lwd=3)
 
 pretty.legend(kleur=c(1, 2), lwd=3, 
               c( "Vrouw", "Man"))
@@ -261,7 +261,7 @@ trend_tot<-b[,2]
 pretty.plot(type="l", data.frame(tmp1$ym, 100*tmp1$beroeps/tmp1$totaal), kleur=5
             , main="Arbeidsparticipatie allen"
             , xlab="jaar", ylab="procent", ylim=c(25, 90))
-pretty.plot(add=T, ts_to_df(100*trend_tot), kleur=1, lwd=2)
+pretty.plot(add=T, 100*trend_tot, kleur=1, lwd=2)
 #-------------------
 tmp0<-maand_werkloosheid_tabel[maand_werkloosheid_tabel$Geslacht_C == "Totaal"
                                & maand_werkloosheid_tabel$Leeftijd_C== "15 tot 65 jaar"
@@ -275,7 +275,7 @@ a<-ts(tmp1$beroeps/tmp1$totaal, start=2003, freq=12)
 b<-stl(a, s.window=perVlag, t.window=tVlag)
 b<-b$time.series
 trend_tot<-b[,2]
-pretty.plot(add=T, ts_to_df(100*trend_tot), kleur=2, lwd=4)
+pretty.plot(add=T, 100*trend_tot, kleur=2, lwd=4)
 # -----------
 tmp0<-maand_werkloosheid_tabel[maand_werkloosheid_tabel$Geslacht_C == "Totaal"
                                & maand_werkloosheid_tabel$Leeftijd_C== "25 tot 45 jaar"
@@ -289,7 +289,7 @@ a<-ts(tmp1$beroeps/tmp1$totaal, start=2003, freq=12)
 b<-stl(a, s.window=perVlag, t.window=tVlag)
 b<-b$time.series
 trend_tot<-b[,2]
-pretty.plot(add=T, ts_to_df(100*trend_tot), kleur=3, lwd=2)
+pretty.plot(add=T, 100*trend_tot, kleur=3, lwd=2)
 # -----------
 tmp0<-maand_werkloosheid_tabel[maand_werkloosheid_tabel$Geslacht_C == "Totaal"
                                & maand_werkloosheid_tabel$Leeftijd_C== "45 tot 65 jaar"
@@ -303,7 +303,7 @@ a<-ts(tmp1$beroeps/tmp1$totaal, start=2003, freq=12)
 b<-stl(a, s.window=perVlag, t.window=tVlag)
 b<-b$time.series
 trend_tot<-b[,2]
-pretty.plot(add=T, ts_to_df(100*trend_tot), kleur=4, lwd=2)
+pretty.plot(add=T, 100*trend_tot, kleur=4, lwd=2)
 # -----------
 pretty.legend(kleur=c(1,2,3,4), lwd=c(2,4,2,2)
               , legend=c("15 tot 25 jaar", "15 tot 65 jaar", "25 tot 45 jaar","45 tot 65 jaar"))
@@ -327,7 +327,7 @@ trend_tot<-b[,2]
 pretty.plot(type="l", data.frame(tmp1$ym, 100*tmp1$beroeps/tmp1$totaal), kleur=5
             , main="Arbeidsparticipatie ten opzichte van 2003 (100%)"
             , xlab="jaar", ylab="procent", ylim=c(50,150))
-pretty.plot(add=T, ts_to_df(100*trend_tot/trend_tot[1]), kleur=1, lwd=2)
+pretty.plot(add=T, 100*trend_tot/trend_tot[1], kleur=1, lwd=2)
 #-------------------
 tmp0<-maand_werkloosheid_tabel[maand_werkloosheid_tabel$Geslacht_C == "Totaal"
                                & maand_werkloosheid_tabel$Leeftijd_C== "15 tot 65 jaar"
@@ -341,7 +341,7 @@ a<-ts(tmp1$beroeps/tmp1$totaal, start=2003, freq=12)
 b<-stl(a, s.window=perVlag, t.window=tVlag)
 b<-b$time.series
 trend_tot<-b[,2]
-pretty.plot(add=T, ts_to_df(100*trend_tot/trend_tot[1]), kleur=2, lwd=4)
+pretty.plot(add=T, 100*trend_tot/trend_tot[1], kleur=2, lwd=4)
 # -----------
 tmp0<-maand_werkloosheid_tabel[maand_werkloosheid_tabel$Geslacht_C == "Totaal"
                                & maand_werkloosheid_tabel$Leeftijd_C== "25 tot 45 jaar"
@@ -355,7 +355,7 @@ a<-ts(tmp1$beroeps/tmp1$totaal, start=2003, freq=12)
 b<-stl(a, s.window=perVlag, t.window=tVlag)
 b<-b$time.series
 trend_tot<-b[,2]
-pretty.plot(add=T, ts_to_df(100*trend_tot/trend_tot[1]), kleur=3, lwd=2)
+pretty.plot(add=T, 100*trend_tot/trend_tot[1], kleur=3, lwd=2)
 # -----------
 tmp0<-maand_werkloosheid_tabel[maand_werkloosheid_tabel$Geslacht_C == "Totaal"
                                & maand_werkloosheid_tabel$Leeftijd_C== "45 tot 65 jaar"
@@ -369,7 +369,7 @@ a<-ts(tmp1$beroeps/tmp1$totaal, start=2003, freq=12)
 b<-stl(a, s.window=perVlag, t.window=tVlag)
 b<-b$time.series
 trend_tot<-b[,2]
-pretty.plot(add=T, ts_to_df(100*trend_tot/trend_tot[1]), kleur=4, lwd=2)
+pretty.plot(add=T, 100*trend_tot/trend_tot[1], kleur=4, lwd=2)
 # -----------
 pretty.legend(kleur=c(1,2,3,4), lwd=c(2,4,2,2)
               , legend=c("15 tot 25 jaar", "15 tot 65 jaar", "25 tot 45 jaar","45 tot 65 jaar"))
@@ -386,19 +386,19 @@ beroeps<-ts(werk[,5], start=2003, freq=12)
 niet_beroeps<-ts(werk[,20], start=2003, freq=12)
 werkloos<-ts(werk[,15], start=2003, freq=12)
 
-pretty.plot(ts_to_df(beroeps-beroeps[1]), kleur=5, ylim=c(-100,800)# yat=c(7000,9000)
+pretty.plot(beroeps-beroeps[1], kleur=5, ylim=c(-100,800)# yat=c(7000,9000)
             ,main="Beroepsbevolking: actief vs. werkloos\n in absolute aantallen  * 1000"
             , xlab="jaar", ylab=" "
             )
 a<-stl(beroeps-beroeps[1], s.window=perVlag, t.window=tVlag)$time.series[,2]
-pretty.plot(ts_to_df(a-a[1])
+pretty.plot(a-a[1]
             , lwd=3, kleur=1, add=TRUE)
-pretty.plot(ts_to_df(werkloos-werkloos[1]), lwd=1, kleur=4, add=T)
+pretty.plot(werkloos-werkloos[1], lwd=1, kleur=4, add=T)
 a<-stl(werkloos-werkloos[1], s.window=perVlag, t.window=tVlag)$time.series[,2]
 w.rem=a[1]+werkloos[1]
-pretty.plot(ts_to_df(a-a[1]), lwd=3, kleur=2, add=T)
+pretty.plot(a-a[1], lwd=3, kleur=2, add=T)
 a<-beroeps+niet_beroeps-(beroeps[1]+niet_beroeps[1])
-pretty.plot(ts_to_df(a+600), lwd=3, kleur=4, add=T)
+pretty.plot(a+600, lwd=3, kleur=4, add=T)
 pretty.abline(kleur=4, v=2013.33)
 pretty.legend(kleur=c(1,2,4), lwd=3, legend=c("beroepsbevolking", "werkloze bevolking", "totaal 15-65 jaar")
 )

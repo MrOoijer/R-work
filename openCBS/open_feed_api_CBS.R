@@ -4,7 +4,7 @@
 
 
 library(jsonlite)
-library(RCurl)
+# library(RCurl)
 ##
 ## call CBS feed or get cached table
 ##
@@ -18,7 +18,7 @@ open_feed_api_CBS <- function(table_name, new=FALSE, progress=FALSE){
   #
   if (new == TRUE || ! file.exists(file_name)){
     api_url<-paste0(api_base,table_name, force_json)
-    my_data <- readLines(api_url)
+    my_data <- readLines(api_url, warn=FALSE)
     my_json <-fromJSON(my_data)
     api_table <-my_json$value
     table_url <- api_table$url[api_table$name=="TypedDataSet"]
@@ -26,7 +26,7 @@ open_feed_api_CBS <- function(table_name, new=FALSE, progress=FALSE){
     first=TRUE; iter=1
     while (TRUE){
       # read api interface
-      my_data <- readLines(url)
+      my_data <- readLines(url, warn=FALSE)
       my_json <-fromJSON(my_data)
       if( length(my_json$value) == 0) break
       if( first == FALSE) {data_table<- rbind(data_table, my_json$value)}
@@ -48,7 +48,7 @@ open_feed_api_CBS <- function(table_name, new=FALSE, progress=FALSE){
       Naam= api_table$name[i]
       Naam2= paste0(Naam, "_C")
       url= paste0(api_table$url[i], force_json)
-      my_data <- readLines(url)
+      my_data <- readLines(url, warn=FALSE)
       my_json <-fromJSON(my_data)
       key_data <- my_json$value
       for(k in 1:dim(key_data)[1]){
@@ -59,12 +59,5 @@ open_feed_api_CBS <- function(table_name, new=FALSE, progress=FALSE){
     return(data_table)
   }
   return(read.table(file_name, header=TRUE, stringsAsFactors = FALSE))
-}
-
-ts_to_df <- function(x){
-  library(zoo, quietly=TRUE)
-  y<- data.frame(index(x), as.numeric(x))
-  names(y)<-c("Jaar", deparse(substitute(x)) )
-  return(y)
 }
 

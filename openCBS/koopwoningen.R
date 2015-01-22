@@ -23,7 +23,7 @@ if(!testVlag) pretty.start(sprintf("./afbeelding/woningen_01_%s.png", format(Sys
     650, 450, palet=2)
 
 
-pretty.plot(ts_to_df(b)
+pretty.plot(b
             , xlim=c(1994.95,p)
             , xat=c(1995,2000,2005,2010,2014)
             , ylim=c(30,120)
@@ -39,8 +39,8 @@ if(!testVlag) pretty.end()
 if(!testVlag) pretty.start(sprintf("./afbeelding/woningen_02_%s.jpg", format(Sys.time(), "%Y_%b_%d")),
                            650, 450, palet=2)
 
-pretty.plot(ts_to_df(c)
-            , xlim=c(2008,2017)
+pretty.plot(c
+            , xlim=c(1995,2017)
             , xat=c(1995,2000,2005,2008,2009,2010,2011,2012,2013,2014,2016)
             , ylab=" "
             , kleur=5
@@ -51,14 +51,14 @@ pretty.plot(ts_to_df(c)
                            tail(maand_koopwoningen_tabel$Perioden_C, 1)) 
             , source="Bron: Cbs Open Data Portal 2014")
 
-pretty.plot(ts_to_df(trend.hvm)
+pretty.plot(trend.hvm
             , add=TRUE
             , kleur = 2
             , lwd=3)
 aa<-forecast(c, h=24)
-pretty.plot(ts_to_df(aa$mean), lwd=3, kleur=4, add=TRUE)
+pretty.plot(aa$mean, lwd=3, kleur=4, add=TRUE)
 pretty.legend(kleur=c(5,4,2), lwd=3, 
-              c("Maandelijkse\nVerkoop", "Forecast\nVan verkoop", "Vekooptrend\nseizoensgecorr.")
+              c("Maandelijkse\nVerkoop", "Forecast\nVan verkoop", "Verkooptrend\nseizoensgecorr.")
 )
 
 

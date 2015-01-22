@@ -1,5 +1,8 @@
 source("open_feed_api_CBS.R")
 source("../library/pretty.plot.R")
+
+testVlag=F
+
 ww<-open_feed_api_CBS("37506wwm", new=FALSE)
 bs<-open_feed_api_CBS("37789ksz", new=FALSE)
 maand_bs<-bs[substr(bs$Perioden,5,6) == "MM",]
@@ -14,13 +17,13 @@ bs.ts <- ts(maand_bs[,12], start=1998,freq=12)
 bs.ts <- window(bs.ts, end=end(ww.ts))
 all.ts<-ww.ts+bs.ts
 
-jpeg(filename = sprintf("./afbeelding/w&b_%s.jpg", format(Sys.time(), "%Y_%b_%d")),
+if (!testVlag) jpeg(filename = sprintf("./afbeelding/w&b_%s.jpg", format(Sys.time(), "%Y_%b_%d")),
      width = 650, height = 450, units = "px", pointsize = 16,
      quality = 100,
      type = "windows")
 
 
-pretty.plot(ts_to_df(bs.ts)[,1:2]
+pretty.plot(bs.ts
             , type="v"
             , kleur=4
             , lwd=2
@@ -33,12 +36,12 @@ pretty.plot(ts_to_df(bs.ts)[,1:2]
             , ylab="duizenden"
             
             )
-pretty.plot(ts_to_df(bs.ts)[,1:2], type="l", kleur=4, lwd=2, add=TRUE)
-pretty.plot(ts_to_df(all.ts)[,1:2], type="v", kleur=3, lwd=2, add=TRUE)
-pretty.plot(ts_to_df(all.ts)[,1:2], type="l", kleur=3, lwd=2, add=TRUE)
+pretty.plot(bs.ts, type="l", kleur=4, lwd=2, add=TRUE)
+pretty.plot(all.ts, type="v", kleur=3, lwd=2, add=TRUE)
+pretty.plot(all.ts, type="l", kleur=3, lwd=2, add=TRUE)
 pretty.legend(kleur=c(3,4), lwd=3, 
               c("WW + bijstand (* 1000) ", "Bijstand (* 1000)")
 )
 
-junk <- dev.off()
+if (!testVlag) dev.off()
 
