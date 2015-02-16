@@ -1,5 +1,7 @@
+#library(shinythemes)
 source('html.R')
-shinyUI(navbarPage("Global Temperature Explorer",
+shinyUI(navbarPage( 
+"Global Temperature Explorer", #theme= shinytheme("cerulean"),
 # ----- 1 ---------------------------------------                   
                    
                    tabPanel("Welcome", 
@@ -23,9 +25,9 @@ tabPanel("Tutorial",
                                                   , "RSS (satellite)", "UAH (satellite)", "BEST"),
                                       selected = "GISS")                                                                              
                           , HTML("<div style='border: 1px solid lightgrey; padding:5px;'>")                                             
-                          , sliderInput("x.lim2", "Range of years", 1880, 2016, value = c(1880, 2015), format = "####.##", )                                
+                          , sliderInput("x.lim2", "Range of years", 1850, 2016, value = c(1880, 2015), round= TRUE, sep="", step=1, ticks=FALSE)                                
                           , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
-                          , sliderInput("y.lim2", "Vertical axis", -1.4, 0.8, value = c(-1.1, 0.6), format = "#.#", )                                
+                          , sliderInput("y.lim2", "Vertical axis", -1.4, 0.8, value = c(-1.1, 0.6), sep=".",step=0.1, ticks=FALSE)                                
                           , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
                           , sliderInput("smooth.keuze2", "Show avg.'ed", 0, 60, step=3, value = 0, round=TRUE)
                           , HTML("</div>")
@@ -44,9 +46,9 @@ tabPanel("2. Influence of CO2 levels",
            , fluidRow(
              column(3, wellPanel(
                HTML("<div style='border: 1px solid lightgrey; padding:5px;'>")
-                , sliderInput("start.year2", "Regression Period", 1880, 2015, value = c(1880, 2015), format = "####.##", )                                
+                , sliderInput("start.year2", "Regression Period", 1850, 2015, value = c(1850, 2015), round= TRUE, sep="", step=1, ticks=FALSE)                                
                 , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
-                , sliderInput("smooth.keuze.b2", "Smooth Data", 0, 60, value = 0, round=TRUE)
+                , sliderInput("smooth.keuze.b2", "Smooth Data", 0, 400, value = 0, round=TRUE, step=3)
                 , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
                 , radioButtons("trend2", "Fit with:",
                                c("co2" = "co2", "line" = "linear"), selected="linear")
@@ -86,15 +88,15 @@ tabPanel("3. Sunshine and Aerosols"
            HTML(tutorial3.1)
            , fluidRow( 
              column(3, wellPanel(
-               HTML("<h6>Lags in Months</h6><div style='border: 1px solid lightgrey; padding:5px;'>")
+               HTML("<h5>Lags in Months</h5><div style='border: 1px solid lightgrey; padding:5px;'>")
                , checkboxInput("cb31", "Sun", value=FALSE)
-               , sliderInput("sl31", "", 0, 12, value=3, round=TRUE)
+               , sliderInput("sl31", "", 0, 12, value=3, round=TRUE, step=1, ticks=FALSE)
                , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
                , checkboxInput("cb32", "Volcanoes", value=FALSE)
-               , sliderInput("sl32", "", 0, 12, value=8, round=TRUE)
+               , sliderInput("sl32", "", 0, 12, value=8, round=TRUE, step=1, ticks=FALSE)
                , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
                , checkboxInput("cb33", "Day Length", value=FALSE)
-                , sliderInput("sl33", "", 0, 100, value=78, round=TRUE) 
+                , sliderInput("sl33", "", 0, 100, value=78, round=TRUE, step=1) 
                 , HTML("</div>")
                 
              )
@@ -112,13 +114,13 @@ tabPanel("4. Ocean Oscillations", mainPanel(
     column (3, wellPanel(
       HTML("<div style='border: 1px solid lightgrey; padding:5px;'>")
       , checkboxInput("cb41", "ENSO", value=FALSE)
-      , sliderInput("sl41", "", 0, 12, value=3, round=TRUE)
+      , sliderInput("sl41", "", 0, 12, value=3, round=TRUE, step=1)
       , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
       , checkboxInput("cb42", "AMO", value=FALSE)
-      , sliderInput("sl42", "", 0, 12, value=0, round=TRUE)
+      , sliderInput("sl42", "", 0, 12, value=0, round=TRUE, step=1)
       , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
       , checkboxInput("cb43", "PDO", value=FALSE)
-      , sliderInput("sl43", "PDO", 0, 12, value=0, round=TRUE)
+      , sliderInput("sl43", "PDO", 0, 12, value=0, round=TRUE, step=1)
       , HTML("</div>")
       
     ))
@@ -135,7 +137,7 @@ tabPanel("5. Planet System", mainPanel(
   , fluidRow( 
     column(3, wellPanel(
       checkboxInput("cb52", "Seasons", value=FALSE), 
-      h6("Planet Cycles"),
+      h5("Planet Cycles"),
       checkboxGroupInput("boxID2", "", 
                          c("Saros" = "1",                                          
                            "Lunar 1" = "2",
@@ -162,10 +164,10 @@ tabPanel("6. All Combined"
                                        "HADcrut", "JMA", "C&W", "Combined", "CRUTEM (land)", "GISS (land)"
                                        , "RSS (satellite)", "UAH (satellite)", "BEST"),
                            selected = "GISS")                                                                              
-               , HTML("<h6>Appearance</h6><div style='border: 1px solid lightgrey; padding:5px;'>")                                             
-               , sliderInput("x.lim6", "Range of years", 1880, 2016, value = c(1880, 2015), format = "####.##", )                                
+               , HTML("<h5>Appearance</h5><div style='border: 1px solid lightgrey; padding:5px;'>")                                             
+               , sliderInput("x.lim6", "Range of years", 1850, 2016, value = c(1850, 2015), round= TRUE, sep="", step=1, ticks=FALSE)                                
                , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
-               , sliderInput("y.lim6", "Vertical axis", -1.4, 0.8, value = c(-1.1, 0.6), format = "#.#", )                                
+               , sliderInput("y.lim6", "Vertical axis", -1.4, 0.8, value = c(-1.1, 0.6), sep=".", ticks=FALSE, step=0.1)                                
                , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
                , sliderInput("smooth.keuze6", "Show avg.'ed", 0, 60, step=3, value = 0, round=TRUE)
                , HTML("</div>")
@@ -173,9 +175,9 @@ tabPanel("6. All Combined"
                ))
              , column(4, wellPanel(
                HTML("<div style='border: 1px solid lightgrey; padding:5px;'>")
-               , sliderInput("start.year6", "Regression Period", 1880, 2015, value = c(1880, 2015), format = "####.##", )                                
+               , sliderInput("start.year6", "Regression Period", 1850, 2015, value = c(1850, 2015), round= TRUE, sep="", step=1, ticks=FALSE)                                
                , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
-               , sliderInput("smooth.keuze.b6", "Smooth Data", 0, 60, value = 0, round=TRUE)
+               , sliderInput("smooth.keuze.b6", "Smooth Data", 0, 400, value = 0, round=TRUE, step=3)
                , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
                , radioButtons("trend6", "Fit with:",
                               c("co2" = "co2", "line" = "linear"), selected="co2")
@@ -183,18 +185,18 @@ tabPanel("6. All Combined"
                
                ))
              , column(4, wellPanel(
-               HTML("<h6>Lags in Months</h6><div style='border: 1px solid lightgrey; padding:5px;'>")
+               HTML("<h5>Lags in Months</h5><div style='border: 1px solid lightgrey; padding:5px;'>")
                , checkboxInput("cb61", "Sun", value=TRUE)
-               , sliderInput("sl61", "", 0, 12, value=3, round=TRUE)
+               , sliderInput("sl61", "", 0, 12, value=3, round=TRUE, step=1, ticks=FALSE)
                , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
                , checkboxInput("cb62", "Volcanoes", value=TRUE)
-               , sliderInput("sl62", "", 0, 12, value=6, round=TRUE)
+               , sliderInput("sl62", "", 0, 12, value=6, round=TRUE, step=1, ticks=FALSE)
                , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
                , checkboxInput("cb63", "Day Length", value=TRUE)
-               , sliderInput("sl63", "", 0, 100, value=78, round=TRUE) 
+               , sliderInput("sl63", "", 0, 100, value=78, round=TRUE, step=1, ticks=FALSE) 
                , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
                , checkboxInput("cb64", "ENSO", value=TRUE)
-               , sliderInput("sl64", "", 0, 12, value=3, round=TRUE)
+               , sliderInput("sl64", "", 0, 12, value=3, round=TRUE, step=1, ticks=FALSE)
                , HTML("</div>")
                
                ))
@@ -213,7 +215,7 @@ well= TRUE, widths = c(3, 9)
                    tabPanel("Applet",
                             fluidRow(
                               column(2, wellPanel(
-                                HTML("<h6>Data Source:</h6>")                              
+                                HTML("<h5>Data Source:</h5>")                              
                                 , selectInput("data.keuze", 
                                               label = "",
                                               choices = c("GISS", "NOAA",
@@ -224,11 +226,11 @@ well= TRUE, widths = c(3, 9)
                                 checkboxInput("cbi001", "Viewing Options"),
                                 conditionalPanel( condition = "input.cbi001 == true", 
                                                   HTML("<div style='border: 1px solid lightgrey; padding:5px;'>")
-                                                  , sliderInput("x.lim", "Range of years", 1880, 2016, value = c(1880, 2015), format = "####.##", )                                
+                                                  , sliderInput("x.lim", "Range of years", 1850, 2016, value = c(1850, 2015), round= TRUE, sep="", step=1, ticks=FALSE)                                
                                                   , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
-                                                  , sliderInput("y.lim", "Vertical axis", -1.4, 0.8, value = c(-1.1, 0.6), format = "#.#", )                                
+                                                  , sliderInput("y.lim", "Vertical axis", -1.4, 0.8, value = c(-1.1, 0.6), sep=".", step=0.1, ticks=FALSE)                                
                                                   , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
-                                                  , sliderInput("smooth.keuze", "Show avg.'ed", 0, 60, step=3, value = 0, round=TRUE)
+                                                  , sliderInput("smooth.keuze", "Shown Smoothing Span", 0, 120, value = 0, round=TRUE, step=1, ticks=FALSE)
                                                   , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")                                                  
                                                   , checkboxInput("cb00", "Show Confidence Interval", value=TRUE)
                                                   , HTML("</div>")
@@ -237,12 +239,14 @@ well= TRUE, widths = c(3, 9)
                                 checkboxInput("cbi002", "Regression Options"),
                                 conditionalPanel( condition = "input.cbi002 == true" 
                                                   , HTML("<div style='border: 1px solid lightgrey; padding:5px;'>")
-                                                  , sliderInput("start.year", "Regression Period", 1880, 2016, value = c(1880, 2015), format = "####.##", )                                
+                                                  , sliderInput("start.year", "Regression Period", 1850, 2016, value = c(1850, 2015), round= TRUE, sep="", step=1, ticks=FALSE)                                
                                                   , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
-                                                  , sliderInput("smooth.keuze.b", "Smooth Data", 0, 60, value = 0, round=TRUE)
+                                                  , sliderInput("smooth.keuze.b", "Smoothing Span", 0, 120, value = 0, round=TRUE, step=1, ticks=FALSE)
                                                   , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
                                                   , radioButtons("trend", "Trend type:",
                                                                  c("co2 + other ghg" = "co2", "linear" = "linear", "spline" = "spline"), selected="co2")
+                                                  , radioButtons("smoother", "Smoothing algorithm",
+                                                                 c("Savitzky-Golay" = "Golay", "Loess" = "Loess"))
                                                   , HTML("</div>")
                                 ))
                                 , wellPanel(
@@ -250,13 +254,13 @@ well= TRUE, widths = c(3, 9)
                                    conditionalPanel( condition = "input.cbi004 == true" 
                                                      , HTML("<div style='border: 1px solid lightgrey; padding:5px;'>")
                                                      , checkboxInput("cba001", "ENSO", value=TRUE)
-                                                     , sliderInput("ens.lag", "", 0, 12, value=3, round=TRUE)
+                                                     , sliderInput("ens.lag", "", 0, 12, value=3, round=TRUE, step=1, ticks=FALSE)
                                                      , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
                                                      , checkboxInput("cba002", "AMO", value=TRUE)
-                                                     , sliderInput("amo.lag", "", 0, 12, value=6, round=TRUE)
+                                                     , sliderInput("amo.lag", "", 0, 12, value=6, round=TRUE, step=1, ticks=FALSE)
                                                      , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
                                                      , checkboxInput("cba003", "PDO", value=FALSE)
-                                                     , sliderInput("pdo.lag", "", 0, 12, value=1, round=TRUE)
+                                                     , sliderInput("pdo.lag", "", 0, 12, value=1, round=TRUE, step=1, ticks=FALSE)
                                                      , HTML("</div>")
                                    )), wellPanel(
                                       checkboxInput("cbi005", "Options Planetary influences"),
@@ -276,22 +280,28 @@ well= TRUE, widths = c(3, 9)
                                #
                               )), column(2
                                          , wellPanel(
-                                           #checkboxInput("cbi003", "Open major influences", value=TRUE),
-                                           #conditionalPanel( condition = "input.cbi003 == true"
-                                                             h6("Set Inertia (lag in months):")
+                                           checkboxInput("cbi003", "Major options", value=TRUE),
+                                           conditionalPanel( condition = "input.cbi003 == true", 
+                                                             h5("Set Inertia (lag in months):")
                                                              , HTML("<div style='border: 1px solid lightgrey; padding:5px;'>")
-                                                             , sliderInput("co2.lag", "CO2-levels", 0, 140, value=0, round=TRUE)
+                                                             , sliderInput("co2.lag", "CO2-levels", 0, 140, value=0, round=TRUE, step=1, ticks=FALSE)
                                                              , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
                                                              , checkboxInput("cba004", "Sun Irradiance", value=TRUE)
-                                                             , sliderInput("ssp.lag", "", 0, 12, value=3, round=TRUE)
+                                                             , sliderInput("ssp.lag", "", 0, 12, value=3, round=TRUE, step=1, ticks=FALSE)
                                                              , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
                                                              , checkboxInput("cba005", "Volcanic Aerosols", value=TRUE)
-                                                             , sliderInput("vol.lag", "", 0, 12, value=6, round=TRUE)
+                                                             , sliderInput("vol.lag", "", 0, 12, value=6, round=TRUE, step=1, ticks=FALSE)
                                                              , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
                                                              , checkboxInput("cba006", "Lenghts of Day", value=TRUE)
-                                                             , sliderInput("lod.lag", "", 0, 100, value=78, round=TRUE) 
+                                                             , sliderInput("lod.lag", "", 0, 100, value=78, round=TRUE, step=1, ticks=FALSE) 
                                                              , HTML("</div>")
-                                         #  )
+                                           )
+                                         ), wellPanel(
+                                           checkboxInput("cbi006", "Download Settings", value=FALSE),
+                                           conditionalPanel( condition = "input.cbi006 == true", 
+                                                             h5("Filename (.png):"),
+                                                             textInput("fname", "", "ThisGraph")
+                                           )                 
                                          ), wellPanel(HTML("<p>Clicking the boxes in the first column will open a subpanel to (re)set or change options.</p>"))
                                          ), 
                               column(8, 
@@ -299,8 +309,8 @@ well= TRUE, widths = c(3, 9)
                                      To instantly change the diagram, use the sliders and buttons from the side bars.
                                      For instructions use the Step by Step Tutorial.</p><hr>")               
                                      , plotOutput("map", height = 533, width=800)
+                                     , HTML("<hr>")
                                      , downloadButton(outputId="down", label="Download this graph")
-                                     , HTML("<hr><p>Copyright by Jan van Rongen, 2014-2015.</p>")
                               )
                             )
                    )
@@ -322,43 +332,44 @@ well= TRUE, widths = c(3, 9)
                                           
                                )))
 # ----- 5 ---------------------------------------
-#                    ,tabPanel("Forecast", 
-#                              fluidRow(
-#                                column(2, wellPanel(
-#                                  selectInput("data.keuze.fc", 
-#                                              label = "",
-#                                              choices = c("GISS", "NOAA",
-#                                                          "HADcrut", "JMA", "C&W", "Combined", "CRUTEM (land)", "GISS (land)"
-#                                                          , "RSS (satellite)", "UAH (satellite)", "BEST"),
-#                                              selected = "GISS")                                                                              
-#                                  , HTML("<h6>Appearance</h6><div style='border: 1px solid lightgrey; padding:5px;'>")                                             
-#                                  , sliderInput("x.lim.fc", "Range of years", 1880, 2100, value = c(1880, 2050), format = "####.##", )                                
-#                                  , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
-#                                  , sliderInput("y.lim.fc", "Vertical axis", -1.5, 3, value = c(-1.1, 2), format = "#.#", )                                
-#                                  , HTML("</div>")
-#                                  , HTML("<h6>Regression</h6><div style='border: 1px solid lightgrey; padding:5px;'>")                                             
-#                                  , sliderInput("start.year.fc", "Range of years", 1880, 2016, value = c(1880, 2015), format = "####.##", )                                
-#                                  , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
-#                                  , sliderInput("smooth.keuze.b.fc", "Smoothing factor", 0, 60, step=3, value = 0, round=TRUE)
-#                                  , HTML("</div>")                                 
-#                                )
-#                                ), column(2, wellPanel(
-#                                     HTML("<h6>Note</h6><p>This forecast / prediction page is still under development.
-#                                     Basically it just uses the regression slope of the CO2, some of the known data from the time series and some calculated uncertainties.
-#                                     </p>
-#                                     <p> So it is not very useful yet, but it gives you something to play with. Changing and / or setting
-#                                          other options will be added when the full applet is more stable.</p>"))
-#                                ), column(8,
-#                                       h5("Forecast"),
-#                                       HTML("<p>To instantly change the diagram, use the sliders and buttons from the side bars.
-#                                            </p>"),               
-#                                       plotOutput("map.fc", height = 550, width=800),
-#                                       #                 HTML(paste0("<b>TCR = ", textOutput("tcr", inline=TRUE), "</b>")),
-#                                       HTML("<hr>"),
-#                                       p("Copyright by Jan van Rongen, 2014")
-#                                       
-#                                )
-#                              )
-#                    )
+                   ,tabPanel("Forecast", 
+                             fluidRow(
+                               column(2, wellPanel(
+                                 selectInput("data.keuze.fc", 
+                                             label = "",
+                                             choices = c("GISS", "NOAA",
+                                                         "HADcrut", "JMA", "C&W", "Combined", "CRUTEM (land)", "GISS (land)"
+                                                         , "RSS (satellite)", "UAH (satellite)", "BEST"),
+                                             selected = "GISS")                                                                              
+                                 , HTML("<h5>Appearance</h5><div style='border: 1px solid lightgrey; padding:5px;'>")                                             
+                                 , sliderInput("x.lim.fc", "Range of years", 1850, 2100, value = c(1850, 2050), round= TRUE, sep="", step=1, ticks=FALSE )                                
+                                 , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
+                                 , sliderInput("y.lim.fc", "Vertical axis", -1.5, 3, value = c(-1.1, 2), sep=".", step=0.1, ticks=FALSE)                                
+                                 , HTML("</div>")
+                                 , HTML("<h5>Regression</h5><div style='border: 1px solid lightgrey; padding:5px;'>")                                             
+                                 , sliderInput("start.year.fc", "Range of years", 1850, 2016, value = c(1850, 2015), round= TRUE, sep="", step=1, ticks=FALSE)                                
+                                 , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
+                                 , sliderInput("smooth.keuze.b.fc", "Smoothing factor", 0, 400, , step=1, ticks=FALSE, value = 0, round=TRUE)
+                                 , HTML("</div>")                                 
+                               )
+                               ), column(2, wellPanel(
+                                    HTML("<h5>Note</h5><p>This forecast / prediction page is still under development.
+                                    Basically it just uses the regression slope of the CO2, some of the known data from the time series and some calculated uncertainties.
+                                    </p>
+                                    <p> So it is not very useful yet, but it gives you something to play with. Changing and / or setting
+                                         other options will be added when the full applet is more stable.</p>"))
+                               ), column(8,
+                                      h5("Forecast"),
+                                      HTML("<p>To instantly change the diagram, use the sliders and buttons from the side bars.
+                                           </p><hr>"),               
+                                      plotOutput("map.fc", height = 550, width=800),
+                                      #                 HTML(paste0("<b>TCR = ", textOutput("tcr", inline=TRUE), "</b>")),
+                                      HTML("<hr>")
+                                      , downloadButton(outputId="down2", label="Download this graph")
+                                      
+                                      
+                               )
+                             )
+                   )
                    
 ))

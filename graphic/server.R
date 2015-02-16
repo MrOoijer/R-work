@@ -29,11 +29,13 @@ shinyServer(
       if (input$cba003)pdo.lag=input$pdo.lag
       show.se=input$cb00
       model.keuze= which(input$trend == c("co2", "linear", "spline"))
+      smooth.way=which(input$smoother == c("Golay", "Loess"))
       cel.keuze=as.numeric(input$boxID)
       doen(data.keuze=data.keuze
            , model.keuze=model.keuze
            , start.year=start.year
            , end.year= end.year
+           , smooth.way=smooth.way
            , smooth.keuze=smooth.keuze
            , smooth.keuze.b=smooth.keuze.b
            , co2.lag=co2.lag
@@ -119,7 +121,7 @@ shinyServer(
       ssp.lag=ifelse(input$cb31, input$sl31, -1)
       vol.lag=ifelse(input$cb32, input$sl32, -1)
       lod.lag=ifelse(input$cb33, input$sl33, -1)
-      doen( start.year=1880
+      doen( start.year=1850
             , end.year= 2014
             , smooth.keuze=0
             , co2.lag=0
@@ -139,7 +141,7 @@ shinyServer(
       soi.lag=ifelse(input$cb41, input$sl41, -1)
       amo.lag=ifelse(input$cb42, input$sl42, -1)
       pdo.lag=ifelse(input$cb43, input$sl43, -1)
-      doen( start.year=1880
+      doen( start.year=1850
             , end.year= 2014
             , show.se=TRUE
             , smooth.keuze=0
@@ -155,7 +157,7 @@ shinyServer(
     
     output$map6<-renderPlot({
       cel.keuze=as.numeric(input$boxID2)
-      doen(  start.year=1880
+      doen(  start.year=1850
             , end.year= 2014
             , smooth.keuze=0
             , co2.lag=0
@@ -238,10 +240,15 @@ shinyServer(
     
     output$down <-downloadHandler(
       
-      filename= function(){"thisplot.png"}
+      filename= function(){
+        f.name <- "thisplot.png"
+        if (input$fname != "") f.name=paste0(input$fname, ".png")
+        return(f.name)
+      }
       , content= function(file){
         
-        png(file,width = 800,height = 533,type = "cairo")
+        
+        png(file,width = 800,height = 533)
         # plotting function as main
         data.keuze <- which (input$data.keuze == c("GISS", "NOAA",
                                                    "HADcrut", "JMA", "C&W", "Combined", "CRUTEM (land)", "GISS (land)"
@@ -293,9 +300,42 @@ shinyServer(
         
         dev.off()
         
+      } 
+    )
+    output$down2 <-downloadHandler(
+      
+      filename= function(){
+        f.name <- "thisforecastplot.png"
+        return(f.name)
       }
-      
-      
+      , content= function(file){
+        
+        png(file,width = 800,height = 533)      
+        data.keuze <- which (input$data.keuze.fc == c("GISS", "NOAA",
+                                                      "HADcrut", "JMA", "C&W", "Combined", "CRUTEM (land)", "GISS (land)"
+                                                      , "RSS (satellite)", "UAH (satellite)", "BEST"))
+        
+        doen( start.year=input$start.year.fc[1]
+              , end.year= input$start.year.fc[2]
+              , data.keuze=data.keuze
+              , smooth.keuze=input$smooth.keuze.b.fc
+              , smooth.keuze.b=input$smooth.keuze.b.fc
+              , co2.lag=0
+              , ssp.lag=3
+              , soi.lag=3
+              , lod.lag=78
+              , vol.lag=8
+              , amo.lag=-1
+              , pdo.lag=-1
+              , cel.keuze= c(1,2,3,4,5)
+              , show.se=TRUE
+              , seas.keuze=FALSE
+              , y.lim=input$y.lim.fc
+              , x.lim=input$x.lim.fc
+              , predict = TRUE
+        )     
+        dev.off()
+      }
     )
   }
 )
