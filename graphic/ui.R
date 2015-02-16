@@ -29,7 +29,7 @@ tabPanel("Tutorial",
                           , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
                           , sliderInput("y.lim2", "Vertical axis", -1.4, 0.8, value = c(-1.1, 0.6), sep=".",step=0.1, ticks=FALSE)                                
                           , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
-                          , sliderInput("smooth.keuze2", "Show avg.'ed", 0, 60, step=3, value = 0, round=TRUE)
+                          , sliderInput("smooth.keuze2", "Show avg.'ed", 0, 120, step=3, value = 0, round=TRUE)
                           , HTML("</div>")
                         )
                         )
@@ -48,7 +48,7 @@ tabPanel("2. Influence of CO2 levels",
                HTML("<div style='border: 1px solid lightgrey; padding:5px;'>")
                 , sliderInput("start.year2", "Regression Period", 1850, 2015, value = c(1850, 2015), round= TRUE, sep="", step=1, ticks=FALSE)                                
                 , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
-                , sliderInput("smooth.keuze.b2", "Smooth Data", 0, 400, value = 0, round=TRUE, step=3)
+                , sliderInput("smooth.keuze.b2", "Smooth Data", 0, 120, value = 0, round=TRUE, step=3)
                 , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
                 , radioButtons("trend2", "Fit with:",
                                c("co2" = "co2", "line" = "linear"), selected="linear")
@@ -169,7 +169,7 @@ tabPanel("6. All Combined"
                , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
                , sliderInput("y.lim6", "Vertical axis", -1.4, 0.8, value = c(-1.1, 0.6), sep=".", ticks=FALSE, step=0.1)                                
                , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
-               , sliderInput("smooth.keuze6", "Show avg.'ed", 0, 60, step=3, value = 0, round=TRUE)
+               , sliderInput("smooth.keuze6", "Show avg.'ed", 0, 120, step=3, value = 0, round=TRUE)
                , HTML("</div>")
                
                ))
@@ -177,7 +177,7 @@ tabPanel("6. All Combined"
                HTML("<div style='border: 1px solid lightgrey; padding:5px;'>")
                , sliderInput("start.year6", "Regression Period", 1850, 2015, value = c(1850, 2015), round= TRUE, sep="", step=1, ticks=FALSE)                                
                , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
-               , sliderInput("smooth.keuze.b6", "Smooth Data", 0, 400, value = 0, round=TRUE, step=3)
+               , sliderInput("smooth.keuze.b6", "Smooth Data", 0, 120, value = 0, round=TRUE, step=3)
                , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
                , radioButtons("trend6", "Fit with:",
                               c("co2" = "co2", "line" = "linear"), selected="co2")
@@ -245,8 +245,8 @@ well= TRUE, widths = c(3, 9)
                                                   , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
                                                   , radioButtons("trend", "Trend type:",
                                                                  c("co2 + other ghg" = "co2", "linear" = "linear", "spline" = "spline"), selected="co2")
-                                                  , radioButtons("smoother", "Smoothing algorithm",
-                                                                 c("Savitzky-Golay" = "Golay", "Loess" = "Loess"))
+#                                                   , radioButtons("smoother", "Smoothing algorithm",
+#                                                                  c("Savitzky-Golay" = "Golay", "Loess" = "Loess"))
                                                   , HTML("</div>")
                                 ))
                                 , wellPanel(
@@ -332,44 +332,44 @@ well= TRUE, widths = c(3, 9)
                                           
                                )))
 # ----- 5 ---------------------------------------
-                   ,tabPanel("Forecast", 
-                             fluidRow(
-                               column(2, wellPanel(
-                                 selectInput("data.keuze.fc", 
-                                             label = "",
-                                             choices = c("GISS", "NOAA",
-                                                         "HADcrut", "JMA", "C&W", "Combined", "CRUTEM (land)", "GISS (land)"
-                                                         , "RSS (satellite)", "UAH (satellite)", "BEST"),
-                                             selected = "GISS")                                                                              
-                                 , HTML("<h5>Appearance</h5><div style='border: 1px solid lightgrey; padding:5px;'>")                                             
-                                 , sliderInput("x.lim.fc", "Range of years", 1850, 2100, value = c(1850, 2050), round= TRUE, sep="", step=1, ticks=FALSE )                                
-                                 , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
-                                 , sliderInput("y.lim.fc", "Vertical axis", -1.5, 3, value = c(-1.1, 2), sep=".", step=0.1, ticks=FALSE)                                
-                                 , HTML("</div>")
-                                 , HTML("<h5>Regression</h5><div style='border: 1px solid lightgrey; padding:5px;'>")                                             
-                                 , sliderInput("start.year.fc", "Range of years", 1850, 2016, value = c(1850, 2015), round= TRUE, sep="", step=1, ticks=FALSE)                                
-                                 , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
-                                 , sliderInput("smooth.keuze.b.fc", "Smoothing factor", 0, 400, , step=1, ticks=FALSE, value = 0, round=TRUE)
-                                 , HTML("</div>")                                 
-                               )
-                               ), column(2, wellPanel(
-                                    HTML("<h5>Note</h5><p>This forecast / prediction page is still under development.
-                                    Basically it just uses the regression slope of the CO2, some of the known data from the time series and some calculated uncertainties.
-                                    </p>
-                                    <p> So it is not very useful yet, but it gives you something to play with. Changing and / or setting
-                                         other options will be added when the full applet is more stable.</p>"))
-                               ), column(8,
-                                      h5("Forecast"),
-                                      HTML("<p>To instantly change the diagram, use the sliders and buttons from the side bars.
-                                           </p><hr>"),               
-                                      plotOutput("map.fc", height = 550, width=800),
-                                      #                 HTML(paste0("<b>TCR = ", textOutput("tcr", inline=TRUE), "</b>")),
-                                      HTML("<hr>")
-                                      , downloadButton(outputId="down2", label="Download this graph")
-                                      
-                                      
-                               )
-                             )
-                   )
+#                    ,tabPanel("Forecast", 
+#                              fluidRow(
+#                                column(2, wellPanel(
+#                                  selectInput("data.keuze.fc", 
+#                                              label = "",
+#                                              choices = c("GISS", "NOAA",
+#                                                          "HADcrut", "JMA", "C&W", "Combined", "CRUTEM (land)", "GISS (land)"
+#                                                          , "RSS (satellite)", "UAH (satellite)", "BEST"),
+#                                              selected = "GISS")                                                                              
+#                                  , HTML("<h5>Appearance</h5><div style='border: 1px solid lightgrey; padding:5px;'>")                                             
+#                                  , sliderInput("x.lim.fc", "Range of years", 1850, 2100, value = c(1850, 2050), round= TRUE, sep="", step=1, ticks=FALSE )                                
+#                                  , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
+#                                  , sliderInput("y.lim.fc", "Vertical axis", -1.5, 3, value = c(-1.1, 2), sep=".", step=0.1, ticks=FALSE)                                
+#                                  , HTML("</div>")
+#                                  , HTML("<h5>Regression</h5><div style='border: 1px solid lightgrey; padding:5px;'>")                                             
+#                                  , sliderInput("start.year.fc", "Range of years", 1850, 2016, value = c(1850, 2015), round= TRUE, sep="", step=1, ticks=FALSE)                                
+#                                  , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
+#                                  , sliderInput("smooth.keuze.b.fc", "Smoothing factor", 0, 120, , step=1, ticks=FALSE, value = 0, round=TRUE)
+#                                  , HTML("</div>")                                 
+#                                )
+#                                ), column(2, wellPanel(
+#                                     HTML("<h5>Note</h5><p>This forecast / prediction page is still under development.
+#                                     Basically it just uses the regression slope of the CO2, some of the known data from the time series and some calculated uncertainties.
+#                                     </p>
+#                                     <p> So it is not very useful yet, but it gives you something to play with. Changing and / or setting
+#                                          other options will be added when the full applet is more stable.</p>"))
+#                                ), column(8,
+#                                       h5("Forecast"),
+#                                       HTML("<p>To instantly change the diagram, use the sliders and buttons from the side bars.
+#                                            </p><hr>"),               
+#                                       plotOutput("map.fc", height = 550, width=800),
+#                                       #                 HTML(paste0("<b>TCR = ", textOutput("tcr", inline=TRUE), "</b>")),
+#                                       HTML("<hr>")
+#                                       , downloadButton(outputId="down2", label="Download this graph")
+#                                       
+#                                       
+#                                )
+#                              )
+#                    )
                    
 ))

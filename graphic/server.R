@@ -29,13 +29,13 @@ shinyServer(
       if (input$cba003)pdo.lag=input$pdo.lag
       show.se=input$cb00
       model.keuze= which(input$trend == c("co2", "linear", "spline"))
-      smooth.way=which(input$smoother == c("Golay", "Loess"))
+      # smooth.way=which(input$smoother == c("Golay", "Loess"))
       cel.keuze=as.numeric(input$boxID)
       doen(data.keuze=data.keuze
            , model.keuze=model.keuze
            , start.year=start.year
            , end.year= end.year
-           , smooth.way=smooth.way
+           # , smooth.way=smooth.way
            , smooth.keuze=smooth.keuze
            , smooth.keuze.b=smooth.keuze.b
            , co2.lag=co2.lag

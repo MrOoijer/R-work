@@ -337,7 +337,7 @@ doen<-function(
   end.year= 2016, 
   norm.doen=TRUE,
   show.se=TRUE,
-  x.lim=c(1800,2015), 
+  x.lim=c(1880,2015), 
   predict=FALSE
 ){
   # print(c(start.year, end.year, end.y))
@@ -434,7 +434,7 @@ doen<-function(
   my.se= se.autocor(model.fit)
   if (show.se){
     pretty.plot(type="a", data.frame(time(model), model.fit$fitted+my.se, model.fit$fitted-my.se),
-                , ccloc=5, kleur=12
+                , ccloc=5, kleur=13
                 , ylim=yspan #, yat=seq(-1.2, 2.4, by=0.6)
                 , xlim=c(x.lim[1], x.lim[2]+0.3)
                 , main=sprintf("%s Temperature Anomaly (Baseline 1986-2005)%s", model.str, add.txt))
@@ -448,7 +448,7 @@ doen<-function(
   if (smooth.keuze>2) pretty.plot(ts.to.df(model.display), kleur=3, type="l", add=T, lwd=2)
   doen.tcr<<-log(2) * model.fit$coef['co2']
   if (show.reg){
-    pretty.plot(data.frame(time(model), model.fit$fitted), lwd= 2, kleur=11, add=T)
+    pretty.plot(data.frame(time(model), model.fit$fitted), lwd= 2, kleur=13, add=T)
     if (model.keuze== 1) {
       ci=se.autoco2(model.fit, model.mode=model.mode)
       ttxt=paste0(sprintf("Fit: preRS= %2.4f\n", preRS(model.fit)),
@@ -473,7 +473,7 @@ doen<-function(
                 , labels=ttxt )
     first.txt<- "Data"
     if (smooth.keuze.b>0) first.txt<- sprintf("Data [%d months Smoothed]", smooth.keuze.b)
-    pretty.legend(lwd=c(3,3), kleur=c(3,12), c(first.txt, "Fitted Model"))
+    pretty.legend(lwd=c(3,3), kleur=c(3,13), c(first.txt, "Fitted Model"))
   }
   if(predict) {
     period.length=round(x.lim[2]-end.year, 0)
