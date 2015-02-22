@@ -300,7 +300,7 @@ my.golay<-function(model, span){
   # model is the time series
   if (span <= 0) return(model)
   #span from 0-120%
-  span<- -1 + span*3 +(span%%2)
+  span<- -1 + span +(span%%2)
   m1<-as.numeric(model)-sgolayfilt(model, p=3, n = max(span,5))
   return(model-m1)
 }
@@ -333,6 +333,7 @@ doen<-function(
   show.reg=TRUE,
   cel.keuze=NULL,
   seas.keuze=FALSE,
+  deseas.way=1,
   start.year=1800,
   end.year= 2016, 
   norm.doen=TRUE,
@@ -360,7 +361,7 @@ doen<-function(
   model.original<-model
   model<-window(model, start=start.y, end=end.y)
   model.display<- window(model.original, start=x.lim[1], end=x.lim[2])
-  if(seas.keuze) smooth.keuze=max(1, smooth.keuze)
+  # if(seas.keuze) smooth.keuze=max(1, smooth.keuze)
   if (smooth.keuze>0) {
     model.display<-my.smoother(smooth.way, model, smooth.keuze)
   }
@@ -369,6 +370,7 @@ doen<-function(
   amo <- amo.ts
   pdo <- pdo.ts
   co2 <- co2.ts
+  vol <- vol.ts
   
   if (smooth.keuze.b>0) {
     model<-my.smoother(smooth.way, model, smooth.keuze.b)
@@ -376,6 +378,7 @@ doen<-function(
     ens<-my.smoother(smooth.way, ens, smooth.keuze.b)
     amo<-my.smoother(smooth.way, amo, smooth.keuze.b)
     pdo<-my.smoother(smooth.way, pdo, smooth.keuze.b)
+    vol<-my.smoother(smooth.way, vol, smooth.keuze.b)
   }
   model.str<-c("GISS", "NOAA", "Hadcrut 4.3", "JMA", "C&W"
                , "Combined series", "CRUTEM (land only)", "GISS (land only)"
@@ -410,7 +413,7 @@ doen<-function(
   if (soi.lag>=0) form <-paste0(form, "+soi")
   ssp<- window(lag(ssp.ts, - ssp.lag), start=start.y, end=end.y)
   if (ssp.lag>=0) form <-paste0(form, "+ssp")
-  vol<- window(lag(vol.ts, - vol.lag), start=start.y, end=end.y)
+  vol<- window(lag(vol, - vol.lag), start=start.y, end=end.y)
   if (vol.lag>=0) form <-paste0(form, "+vol")
   amo<- window(lag(amo, - amo.lag), start=start.y, end=end.y)
   if (amo.lag>=0) form <-paste0(form, "+amo")
@@ -424,7 +427,8 @@ doen<-function(
     soi<-normalized(soi); ssp<-normalized(ssp); vol<-normalized(vol)
     amo<-normalized(amo); lod<-normalized(lod); pdo<-normalized(pdo)
   }
-  if (seas.keuze) form<-paste0(form, "+s0+c0+sh+ch")
+  if (seas.keuze && deseas.way==1) form<-paste0(form, "+s0+c0+sh+ch")
+  if (seas.keuze && deseas.way==2 && smooth.keuze.b <= 0 ) model<-model-stl(model, s.window="periodic")$time.series[,"seasonal"]
   if (! is.null(cel.keuze)) {
     for (i in 1:5) if (i %in% cel.keuze) form<-paste0(form, c("+sar","+lu1","+lu2","+jup","+tid")[i])
   }
@@ -466,10 +470,10 @@ doen<-function(
     }
     
     if (model.keuze ==3 )ttxt= sprintf("Fit: preRS=%2.4f\n[undefined] for NS\n", preRS(model.fit))
-    xpos<-(x.lim[2]-2.9)
-    ypos= (12*yspan[2]+yspan[1])/13
+    xpos<-(x.lim[1]+2.9)
+    ypos= (3*yspan[2]+yspan[1])/4 #ypos= (12*yspan[2]+yspan[1])/13
     
-    pretty.text(x=xpos,y=ypos,kleur=1, adj=1, font=4, cex=1.2
+    pretty.text(x=xpos,y=ypos,kleur=13, adj=0, font=4, cex=1.1
                 , labels=ttxt )
     first.txt<- "Data"
     if (smooth.keuze.b>0) first.txt<- sprintf("Data [%d months Smoothed]", smooth.keuze.b)

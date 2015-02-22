@@ -27,15 +27,18 @@ shinyServer(
       if (input$cba005)vol.lag=input$vol.lag
       pdo.lag=-1
       if (input$cba003)pdo.lag=input$pdo.lag
-      show.se=input$cb00
+      show.se=input$cb00b
+      show.reg=input$cb00a
+      if (show.reg == FALSE) show.se=FALSE
       model.keuze= which(input$trend == c("co2", "linear", "spline"))
-      # smooth.way=which(input$smoother == c("Golay", "Loess"))
+      smooth.way=which(input$smoother == c("Golay", "Loess"))
+      deseas.way=which(input$deseas == c("sine", "stl"))
       cel.keuze=as.numeric(input$boxID)
       doen(data.keuze=data.keuze
            , model.keuze=model.keuze
            , start.year=start.year
            , end.year= end.year
-           # , smooth.way=smooth.way
+           , smooth.way=smooth.way
            , smooth.keuze=smooth.keuze
            , smooth.keuze.b=smooth.keuze.b
            , co2.lag=co2.lag
@@ -47,8 +50,10 @@ shinyServer(
            , pdo.lag=pdo.lag
            , cel.keuze= cel.keuze
            , seas.keuze=seas.keuze
+           , deseas.way=deseas.way
            , y.lim=y.lim
            , x.lim=x.lim
+           , show.reg=show.reg
            , show.se=show.se
       )
     }, height = 533, width=800)
@@ -246,9 +251,12 @@ shinyServer(
         return(f.name)
       }
       , content= function(file){
+        w.default=800
+        h.default=533
+        if (input$size006=="450 x 300"){w.default=450; h.default=300}
+        if (input$size006=="1200 x 800"){w.default=1200; h.default=800}
+        png(file,width = w.default,height = h.default)      
         
-        
-        png(file,width = 800,height = 533)
         # plotting function as main
         data.keuze <- which (input$data.keuze == c("GISS", "NOAA",
                                                    "HADcrut", "JMA", "C&W", "Combined", "CRUTEM (land)", "GISS (land)"
@@ -273,7 +281,9 @@ shinyServer(
         if (input$cba005)vol.lag=input$vol.lag
         pdo.lag=-1
         if (input$cba003)pdo.lag=input$pdo.lag
-        show.se=input$cb00
+        show.se=input$cb00b
+        show.reg=input$cb00a
+        if (show.reg == FALSE) show.se=FALSE
         model.keuze= which(input$trend == c("co2", "linear", "spline"))
         cel.keuze=as.numeric(input$boxID)
         
@@ -309,8 +319,10 @@ shinyServer(
         return(f.name)
       }
       , content= function(file){
-        
-        png(file,width = 800,height = 533)      
+        w.default=800
+        h.default=533
+        #if (input$size006=="450 x 300"){w.default=450; h.default=300}
+        png(file,width = w.default,height = h.default)      
         data.keuze <- which (input$data.keuze.fc == c("GISS", "NOAA",
                                                       "HADcrut", "JMA", "C&W", "Combined", "CRUTEM (land)", "GISS (land)"
                                                       , "RSS (satellite)", "UAH (satellite)", "BEST"))

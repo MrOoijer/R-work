@@ -22,7 +22,7 @@ Switching from tabs a couple of times usually wakes it up.</em><p>
 <h4>Colophon</h4>
 <p>This application was conceived and written in november 2014. A similar application
 (see [4] in the details tab) inspired me to make this interactive version of an R library I had written.</p>
-<p>The current version is 0.5.0 - dated 2015-02-16, 18:00 hrs. </p>
+<p>The current version is 0.5.1 - dated 2015-02-22, 18:00 hrs. </p>
 <h4>Data is current</h4><p>The data is usually uploaded fresh and brought up-to-date for the latest version of the applet.
 See the details tab for the sources used.</p>
 <h4>Plans for future versions</h4><ul>
@@ -36,8 +36,8 @@ See the details tab for the sources used.</p>
 
 <h5>Fixes and extensions</h5><small>
 <dl>
-<dt>0.5.0 2015-02-16</dt><dd>Button to download graphs. Clean-up some minor editorial things</dd>
-<dt>0.4.1 2015-01-07</dt><dd>More data series. Small changes to applet interface. better colours. Forecast disabled until it is improved.</dd>
+<dt>0.5.1 2015-02-22</dt><dd>Button to download graphs. Clean-up some minor editorial things. Choice of algorithms for filtering.</dd>
+<dt>0.4.1 2015-01-07</dt><dd>More data series. Small changes to applet interface. More colours. Forecast disabled until it is improved.</dd>
 <dt>0.3.0 2014-12-07</dt><dd>Changes to tutorial and applet after feedback.</dd>
 <dt>0.2.2 2014-12-05</dt><dd>Confidence intervals as option.</dd>
 <dt>0.1.1 2014-11-23</dt><dd>First public version. Added PDO, expanded tutorial</dd>

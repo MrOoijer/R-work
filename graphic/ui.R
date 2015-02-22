@@ -230,9 +230,10 @@ well= TRUE, widths = c(3, 9)
                                                   , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
                                                   , sliderInput("y.lim", "Vertical axis", -1.4, 0.8, value = c(-1.1, 0.6), sep=".", step=0.1, ticks=FALSE)                                
                                                   , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
-                                                  , sliderInput("smooth.keuze", "Shown Smoothing Span", 0, 120, value = 0, round=TRUE, step=1, ticks=FALSE)
+                                                  , sliderInput("smooth.keuze", "Set Smoothing Span", 0, 120, value = 0, round=TRUE, step=1, ticks=FALSE)
                                                   , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")                                                  
-                                                  , checkboxInput("cb00", "Show Confidence Interval", value=TRUE)
+                                                  , checkboxInput("cb00a", "Show Regression Fit", value=TRUE)
+                                                  , checkboxInput("cb00b", "Show Confidence Interval", value=TRUE)
                                                   , HTML("</div>")
                                 )
                               ), wellPanel(
@@ -245,9 +246,7 @@ well= TRUE, widths = c(3, 9)
                                                   , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
                                                   , radioButtons("trend", "Trend type:",
                                                                  c("co2 + other ghg" = "co2", "linear" = "linear", "spline" = "spline"), selected="co2")
-#                                                   , radioButtons("smoother", "Smoothing algorithm",
-#                                                                  c("Savitzky-Golay" = "Golay", "Loess" = "Loess"))
-                                                  , HTML("</div>")
+                                                   , HTML("</div>")
                                 ))
                                 , wellPanel(
                                    checkboxInput("cbi004", "Options Oceanic influences"),
@@ -274,7 +273,7 @@ well= TRUE, widths = c(3, 9)
                                                                                "Lunar 2" = "3", 
                                                                                "Jupiter" = "4", 
                                                                                "Tidal" = "5")
-                                                                             , selected = c("1", "2"), inline = FALSE)
+                                                                             , inline = FALSE)
                                                         , HTML("</div>")                                                               
                                       )
                                #
@@ -293,16 +292,29 @@ well= TRUE, widths = c(3, 9)
                                                              , sliderInput("vol.lag", "", 0, 12, value=6, round=TRUE, step=1, ticks=FALSE)
                                                              , HTML("</div><div style='border: 1px solid lightgrey; padding:5px;'>")
                                                              , checkboxInput("cba006", "Lenghts of Day", value=TRUE)
-                                                             , sliderInput("lod.lag", "", 0, 100, value=78, round=TRUE, step=1, ticks=FALSE) 
+                                                             , sliderInput("lod.lag", "", 0, 120, value=78, round=TRUE, step=1, ticks=FALSE) 
                                                              , HTML("</div>")
                                            )
                                          ), wellPanel(
                                            checkboxInput("cbi006", "Download Settings", value=FALSE),
                                            conditionalPanel( condition = "input.cbi006 == true", 
                                                              h5("Filename (.png):"),
-                                                             textInput("fname", "", "ThisGraph")
+                                                             textInput("fname", "", "ThisGraph"), 
+                                                             radioButtons("size006", "Size:",
+                                                                            c("450 x 300" = "450 x 300", "800 x 533" = "800 x 533", "1200 x 800" = "1200 x 800"), selected="800 x 533")
+                                                             
                                            )                 
-                                         ), wellPanel(HTML("<p>Clicking the boxes in the first column will open a subpanel to (re)set or change options.</p>"))
+                                         ), wellPanel(
+                                           checkboxInput("cbi007", "Filter Settings", value=FALSE),
+                                           conditionalPanel( condition = "input.cbi007 == true", 
+                                                             radioButtons("smoother", "Smoothing algorithm",
+                                                                            c("Cubic Savitzky-Golay" = "Golay", "Loess" = "Loess"))
+                                                             ,radioButtons("deseas", "De-seasoning algorithm",
+                                                                          c("Sine filter" = "sine", "STL filter" = "stl"))
+                                                             
+                                                             
+                                           )                 
+                                         ), wellPanel(HTML("<p>To open an options subpanel check its' box.</p>"))
                                          ), 
                               column(8, 
                                      HTML("<h5>Explore the factors that influence the Global Surface Temperature</h5><p>
