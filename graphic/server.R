@@ -285,12 +285,14 @@ shinyServer(
         show.reg=input$cb00a
         if (show.reg == FALSE) show.se=FALSE
         model.keuze= which(input$trend == c("co2", "linear", "spline"))
+        smooth.way=which(input$smoother == c("Golay", "Loess"))
+        deseas.way=which(input$deseas == c("sine", "stl"))
         cel.keuze=as.numeric(input$boxID)
-        
         doen(data.keuze=data.keuze
              , model.keuze=model.keuze
              , start.year=start.year
              , end.year= end.year
+             , smooth.way=smooth.way
              , smooth.keuze=smooth.keuze
              , smooth.keuze.b=smooth.keuze.b
              , co2.lag=co2.lag
@@ -302,8 +304,10 @@ shinyServer(
              , pdo.lag=pdo.lag
              , cel.keuze= cel.keuze
              , seas.keuze=seas.keuze
+             , deseas.way=deseas.way
              , y.lim=y.lim
              , x.lim=x.lim
+             , show.reg=show.reg
              , show.se=show.se
         )
         

@@ -450,11 +450,11 @@ doen<-function(
                 , main=sprintf("%s Temperature Anomaly (Baseline 1986-2005)%s", model.str, add.txt))
   }
   if (smooth.keuze>2) pretty.plot(ts.to.df(model.display), kleur=3, type="l", add=T, lwd=2)
-  doen.tcr<<-log(2) * model.fit$coef['co2']
+  doen.tcr<-log(2) * model.fit$coef['co2']
   if (show.reg){
     pretty.plot(data.frame(time(model), model.fit$fitted), lwd= 2, kleur=13, add=T)
     if (model.keuze== 1) {
-      ci=se.autoco2(model.fit, model.mode=model.mode)
+      ci=log(2)*se.autoco2(model.fit, model.mode=model.mode)
       ttxt=paste0(sprintf("Fit: preRS= %2.4f\n", preRS(model.fit)),
                   sprintf("TCR: %2.4f +- %2.4f (95 perc. Conf. )\n", doen.tcr, ci))
     }
