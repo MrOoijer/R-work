@@ -1,0 +1,112 @@
+---
+title: "Eerste Analyse"
+author: "Jan van Rongen"
+date: "2015-02-28 22:50; 2015-03-02 18:30"
+output: pdf_document
+name: "Analysis-002-D.Rmd"
+---
+##Introductie en samenvatting
+
+Dit is mijn eerste analyse gebaseerd op de spreadsheet. De geegevens uit de eerste tabel van deze spreadsheet zijn gekopieerd naar de csv-file "cases.csv". De kolomnamen in deze file zijn door mij toegevoegd.
+
+Deze analyse volgt de lijnen van de tutorial voor het metafor pakket bij R (*Conducting Meta-Analyses in R with the metafor Package, Wolfgang Viechtbauer, Maastricht University. Journal of Statistical Software; August 2010, Volume 36, Issue 3.*). 
+
+De meta-analyse is uitgevoerd op de 39 studies die in de genoemde tabel voldoende gegevens bevatten om een model te kunnen maken. Dit is dus inclusief studies waarvoor de spreadsheet 0 positieven rapporteert.  Met behulp van het Random Effect Sizes model vinden we een significant effect (0.71, CI=[0.59, 0.86]) voor het Relatieve Risico. 
+
+De funnel-plot en de trim-fill test geven geen indicatie voor publication bias. 
+
+De heterogeniteit in de studies is zodanig groot, dat een verdere analyse met een Mixed Effects Model nuttig zou kunnen zijn. 
+
+```{r, message=FALSE,warning=FALSE}
+library(metafor)
+mydata<-read.csv("cases.csv", sep=";", header=TRUE)
+# delete incomplete cases
+mydata<-mydata[complete.cases(mydata),]
+print(mydata[1:3,], row.names=FALSE)
+```
+
+Ik heb een aanname gemaakt over de betekenis van de getallen in de spreadsheet, nl. dat zij resp. de positieve gevallen en de omvang van de totale groep weergeven. Metafor werkt standaard met het aantal positive en negatieve gevallen. De berekende Relatieve Risisco's komen overeen met die in de spreadsheet, dus deze aanname zal wel kloppen. 
+
+##Random Effect Sizes Model
+
+```{r}
+dat <- escalc(measure = "RR", ai = tpos, bi = ttotal-tpos, ci = cpos, di = ctotal-cpos
+              , data = mydata, append = TRUE)
+res <- rma(yi, vi, data = dat) # make the model
+ci <- confint(res) # confidence intervals of important measures
+print(dat[1:3,], row.names=FALSE); print(res); print(ci)
+```
+
+Met escalc berekenen we de gewenste effect groottes. Metafor maakte voor "RR" een log Relative Risk. Dat heeft voordelen, maar in de plot hierna moeten we de resulatten wel terug vertalen naar de Relative Risk zelf.   
+
+###Het resultaat
+
+Het resultaat van deze eerste berekeningen geeft een effect van 71%: het risico van de pro-biotica-groep ten opzichte van de controle groep. Het resultaat is robuust met p < 0.001
+
+De heterogeniteit staat in de tau^2 statistic. De I^2 statistic (Higgins & Thompson 2002) schat het percentage van de totale variabiliteit dat kan worden toegerekend aan de variabiliteit van de onderliggende testen. Deze maat, tezamen met de Q-test voor heterogeniteit suggereert duidelijk een heterogeniteit onder de werkelijke effecten, die een verder onderzoek *in een mixed effects model* wenselijk maakt.
+
+##De forest plot
+
+```{r,fig.height=8,fig.width=8}
+# forest plot
+N=dim(mydata)[1]+2
+forest(res, slab = paste(dat$author, dat$year, sep = ", ")
+       , xlim = c(-16, 6), at = log(c(0.05, 0.25, 1, 4)), atransf = exp
+       , ilab = cbind(dat$tpos, dat$ttotal, dat$cpos, dat$ctotal)
+       , ilab.xpos = c(-9.5, -8, -6, -4.5), cex = 0.75)
+# legends on this plot
+op <- par(cex = 0.75, font = 2)
+text(c(-9.5, -8, -6, -4.5), N, c("+", "Total", "+", "Total"))
+text(c(-8.75, -5.25), N+1, c("Treated", "Control"))
+text(-16, N, "Author(s) and Year", pos = 4)
+text(6, N, "Relative Risk [95% CI]", pos = 2)
+```
+
+## De funnel plot
+
+De standaard funnel plot links, de gevraagde (totaal positieve gevallen versus RR) rechts. De laatste is niet als zodanig aanwezig in Metafor, maar is zonder de achtergrond van een trechter zo gemaakt. 
+
+```{r,fig.height=6,fig.width=8}
+par(op)
+op=par(mfrow=c(1,2), cex = 0.75, font = 2)
+# res <- rma(yi, vi, data = dat) -- already done above
+funnel(res, main = "Random-Effects Model, Standard version", xlim=c(-4,4))
+n<-dat$tpos+dat$cpos
+plot(pch=19, n~dat$yi, xlim=c(-4,4), ylim=c(0,160), main="Number of Incidents versus RR", 
+     ylab="total incidents", xlab="Log Relative Risk", axes = FALSE, frame.plot = TRUE)
+axis(1, at=seq(-4,4, by=2), labels= formatC(seq(-4,4, by=2))) 
+axis(2, at=c(0,40,80,120, 160), labels= formatC(c(0,40,80,120, 160)))
+abline(h=c(0,40,80,120, 160), col="grey")
+abline(v=res$b, col="grey")
+```
+
+Dit vraagt een verder uitwerking. Bij Publication Bias is vooral de links-rechts verdeling scheef, maar dat is niet het geval. Hier lijkt eerder de variantie niet in orde, want die is niet trechtervormig. Ook hier is een aanwijzing dat indien mogelijk een mixed effect model wordt onderzocht.
+
+```{r,fig.height=5,fig.width=8}
+par(op)
+op=par(cex = 0.75, font = 2)
+qqnorm(res, main = "QQ-plot for this Random-Effects Model")
+
+regtest(res, model = "lm")
+trimfill(res)
+```
+
+De QQ plot is dan ook niet erg vlak en de regressietest geeft wel aanleiding tot enig nadenken. Echter, de  trim-fill test geeft een schatting van 0 ontbrekende studies (op de 39), dus een eerste indicatie is dat er *weinig aanwijzingen voor publication bias zijn.* 
+
+###Vervolg
+
+Belangrijkste lijkt me nu de berekeningen te herhalen met een of meer aanvullende gegevens, zodat een mixed effects model kan worden gebruikt. Ondertussen wil ik kijken of een nieuwe methode van Simonsohn e.a bruikbaar kan zijn, de p-curve analyse (http://papers.ssrn.com/sol3/papers.cfm?abstract_id=2256237). 
+
+Er is nog iets eigenaardigs: met de Odds ratio (ook een log) vinden we wel een publication bias. Kan ik nog niet verklaren.
+
+```{r,fig.height=6,fig.width=8}
+dat2 <- escalc(measure = "OR", ai = tpos, bi = ttotal-tpos, ci = cpos, di = ctotal-cpos
+              , data = mydata, append = TRUE)
+res2 <- rma(yi, vi, data = dat2)
+print(trimfill(res2))
+funnel(trimfill(res2))
+par(op)
+
+```
+
+Jan
