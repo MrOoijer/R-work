@@ -22,7 +22,7 @@ Switching from tabs a couple of times usually wakes it up.</em><p>
 <h4>Colophon</h4>
 <p>This application was conceived and written in november 2014. A similar application
 (see [4] in the details tab) inspired me to make this interactive version of an R library I had written.</p>
-<p>The current version is 0.5.1 - dated 2015-02-22, 18:00 hrs. </p>
+<p>The current version is 0.5.1.a - dated 2015-04-18, 11:00 hrs. </p>
 <h4>Data is current</h4><p>The data is usually uploaded fresh and brought up-to-date for the latest version of the applet.
 See the details tab for the sources used.</p>
 <h4>Plans for future versions</h4><ul>
