@@ -4,12 +4,11 @@
 #' @param Y second time series or vector of the same length as X
 #' @param tau stepsize of shadow_manifold
 #' @param d dimension of shadow_manifold
-#' @param rep_count number of elements in the bootstrap
+#' @param rep_count number of slices per stretchlength in the bootstrap
+#' @param top_count number of points per slice to test in the bootstrap
 #' @param N1 minimum of length of stretches
 #' @param N2 maximum of length of stratches
-#' @return the two correlation vectors in a list
-#' @keywords neighbours
-#' @seealso \code{\link{get_nn}}
+#' @return an ccm object with parameters and results
 #' @examples
 #' # res <- ccm(X, Y)
 #' # plot(ts(res$cor_x))
@@ -102,11 +101,14 @@ ccm_b<- function (X, Y, tau = 2, E = 4, rep_count = 25, N1 = 10, N2 = 100,
   #Truncate at 0
   cor_x[cor_x<0] <- 0
   cor_y[cor_y<0] <- 0
-  return(list(cor_x = cor_x, cor_y = cor_y))
+  param=c(tau=tau, d=E, N1=N1, N2=N2, rep_count=rep_count, top_count=top_count)
+  res<-list(param=param, cor_x = cor_x, cor_y = cor_y, x_hits-x_hits, y_hits=y_hits)
+  class(res)="cmm"
+  return(res)
 }
 
 #' @title Plot Convergent Cross Map
-#' @description Run the convergent Cross Map algorithm and makes a plot
+#' @description Run the convergent Cross Map algorithm and makes a plot.
 #' @param X first time series or vector
 #' @param Y second time series or vector of the same length as X
 #' @param tau stepsize of shadow_manifold
@@ -118,13 +120,11 @@ ccm_b<- function (X, Y, tau = 2, E = 4, rep_count = 25, N1 = 10, N2 = 100,
 #' @param tsName1 name of first vector (for plot)
 #' @param tsName2 idem
 #' @param all plot all intermediate results
-#' @param res if a correlation list, skip the call to ccm
-#' @return the two correlation vectors in a list
-#' @keywords neighbours
-#' @seealso \code{\link{get_nn}}
+#' @param res if a ccm object, skip the call to ccm. Equivalent to a call plot(res).
+#' @return a ccm object
 #' @examples
 #' # res <- plot_ccm(X, Y)
-#' # res<- plot_ccm(res=res)
+#' # plot(res)
 
 plot_ccm <-
   function(X, Y, tau = 2, d = 4, rep_count = 25, N1 = 10, N2 = 150,
@@ -157,5 +157,18 @@ plot_ccm <-
     pretty.plot(ts(res$cor_y, start=N1),add=T, lwd=2, kleur=12)
 
     pretty.legend(kleur = c(2,13), legend=c(l1.string, l2.string), lwd=4)
-    res
+    return(res)
   }
+
+plot.cmm<-function(res , tsName1="X", tsName2="Y"){
+  junk=plot_ccm( res=res
+                 , tau= res$param["tau"]
+                 , d= res$param["d"]
+                 , N1= res$param["N1"]
+                 , N2= res$param["N2"]
+                 , rep_count= res$param["rep_count"]
+                 , top_count= res$param["top_count"]
+                 , tsName1= tsName1, tsName2=tsName2
+
+    )
+}

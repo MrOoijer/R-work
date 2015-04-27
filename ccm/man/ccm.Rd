@@ -5,7 +5,7 @@
 \title{Convergent Cross Map}
 \usage{
 ccm(X, Y, tau = 2, d = 4, rep_count = 25, N1 = 10, N2 = 100,
-  silent = FALSE)
+  silent = FALSE, top_count = NULL)
 }
 \arguments{
 \item{X}{first time series or vector}
@@ -16,14 +16,16 @@ ccm(X, Y, tau = 2, d = 4, rep_count = 25, N1 = 10, N2 = 100,
 
 \item{d}{dimension of shadow_manifold}
 
-\item{rep_count}{number of elements in the bootstrap}
+\item{rep_count}{number of slices per stretchlength in the bootstrap}
 
 \item{N1}{minimum of length of stretches}
 
 \item{N2}{maximum of length of stratches}
+
+\item{top_count}{number of points per slice to test in the bootstrap}
 }
 \value{
-the two correlation vectors in a list
+an ccm object with parameters and results
 }
 \description{
 Run the convergent Cross Map algorithm
@@ -33,8 +35,4 @@ Run the convergent Cross Map algorithm
 # plot(ts(res$cor_x))
 # lines(ts(res$cor_y))
 }
-\seealso{
-\code{\link{get_nn}}
-}
-\keyword{neighbours}
 
