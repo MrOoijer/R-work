@@ -4,15 +4,15 @@
 \alias{predict_y}
 \title{Predict y}
 \usage{
-predict_y(sm.Y, wt)
+predict_y(Yw, wt)
 }
 \arguments{
-\item{sm.Y}{a shadow manifold}
+\item{Yw}{the points on the Y-vector corresponding to a slice}
 
 \item{wt}{a vector of weights on which to calculate a spatial average}
 }
 \value{
-the predicted value of y (all coordinates)
+the predicted value for y
 }
 \description{
 Predicts the value of an observation in series Y given the X-weights and nearest neighbours

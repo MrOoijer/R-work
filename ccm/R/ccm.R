@@ -15,72 +15,147 @@
 #' # plot(ts(res$cor_x))
 #' # lines(ts(res$cor_y))
 
-ccm <- function (X, Y, tau=2, d=4, rep_count=25, N1=10, N2=150){
-  library(energy) # for dcor!
+ccm<- function (X, Y, tau = 2, d = 4, rep_count = 25, N1 = 10, N2 = 100,
+                silent = FALSE, top_count=NULL)
+{
+  if (d >= N1) {
+    cat("Parameter error: d should be strictly smaller than N1.\n")
+    return(NULL)
+  }
+  if(N2 < N1) {
+    cat("Parameter error: N2 should be >= N1.\n")
+    return(NULL)
+  }
+  if (length(X)- N2 < (d-1)*tau){
+    cat("Warning: N2 too big: adjusted to max length\n")
+    N2= -1+ length(X)-(d-1)*tau
+  }
+  if (rep_count > 0) ### bootstrapped
+    return(ccm_b(X, Y, tau = tau, E = d
+                 , rep_count = rep_count, N1 = N1, N2 = N2,
+                 silent = silent, top_count=top_count))
+  #   if (rep_count ==0) ### sliding window
+  #     return(ccm_sw(X, Y, tau = tau, d = d
+  #                  , rep_count = rep_count, N1 = N1, N2 = N2,
+  #                  silent = silent))
+  if (rep_count <= 0){
+    cat("Parameter error: rep_count should be > 0.\n")
+    return(NULL)
+  }
+}
 
-  # calculates the predictability of X|Y and Y|X.
-
-  # (1) prepare data structures
-  #
-  x_hits <<- matrix(NA, 1+N2-N1, rep_count) # global matrices to store all results
-  y_hits <<- matrix(NA, 1+N2-N1, rep_count) # ... for debugging or reporting
-  sm_x <- shadow_manifold(X, tau, d)        # shadow manifolds
-  sm_y <- shadow_manifold(Y, tau, d)
-  ds_x <- as.matrix(dist(sm_x))             # distance matrices
-  ds_y <- as.matrix(dist(sm_y))
-  nn_x <- nearest_neighbours(sm_x,ds_x)     # all d+1 nearest neighbours
-  nn_y <- nearest_neighbours(sm_y,ds_y)
-  max_range <- 1+N2-N1                      # maximum number of points to consider
-  max_l <- dim(ds_x)[1]                     # X and Y are assumed to be same length!
-  cor_x <- numeric(max_range)               # place holders for results
+ccm_b<- function (X, Y, tau = 2, E = 4, rep_count = 25, N1 = 10, N2 = 100,
+                  silent = FALSE, top_count=NULL)
+{
+  OFF_SET = (E-1)*tau
+  # top_count<- rep_count
+  if(is.null(top_count)) top_count<- min(round(.5*(N2-N1), 0), rep_count)
+  x_hits <<- matrix(NA, 1 + N2 - N1, rep_count)
+  y_hits <<- matrix(NA, 1 + N2 - N1, rep_count)
+  ds_x <- shadow_manifold(X, tau, E)
+  ds_y <- shadow_manifold(Y, tau, E)
+  max_range <- 1 + N2 - N1
+  max_l <- dim(ds_x)[1]
+  cor_x <- numeric(max_range)
   cor_y <- numeric(max_range)
-
-  # (2) for each Stretch length we get rep_count random samples from X and Y to test
-  for(L in 1:max_range){
-    win_len <- N1-1+L                       # start with window length of 10, ending with 150
-    pred_x <- matrix(nrow=win_len, ncol=d)              # place holders for intermediary results
-    pred_y <- matrix(nrow=win_len, ncol=d)
-    actual_x <- matrix(nrow=win_len, ncol=d)
-    actual_y <- matrix(nrow=win_len, ncol=d)
+  for (L in 1:max_range) {
+    win_len <- N1 - 1 + L
+    if (!silent && L%%10 == 1) {
+      cat("length ")
+      cat(win_len)
+      cat("\n")
+    }
+    pred_x <- numeric(top_count)
+    pred_y <- numeric(top_count)
+    actual_x <- numeric(top_count)
+    actual_y <- numeric(top_count)
     cor_x_tmp <- numeric(rep_count)
     cor_y_tmp <- numeric(rep_count)
+    slice_sample=  sample(1:(max_l - win_len - 1), rep_count, replace=TRUE)
+    for (j in 1:rep_count) {
+      slice_index=slice_sample[j]
+      top_sample<-sample(1:max_l, top_count, replace=TRUE)
+      for (i in 1:top_count) {
+        top_index <- top_sample[i]
+        window <- c(slice_index + (0:(win_len - 1)), top_index)
+        ds_tmp_x <- ds_x[top_index, window]
+        ds_tmp_y <- ds_y[top_index, window]
+        nn_tmp_x <- nearest_neighbours(E, ds_tmp_x)
+        nn_tmp_y <- nearest_neighbours(E, ds_tmp_y)
+        ww <- nn_weights(dists = ds_tmp_x, nn = nn_tmp_x)
+        pred_y[i] <- predict_y(Y[window+OFF_SET], wt = ww)
+        actual_y[i] <- Y[top_index+OFF_SET]
+        ww <- nn_weights(dists = ds_tmp_y, nn = nn_tmp_y)
+        pred_x[i] <- predict_y(X[window+OFF_SET], wt = ww)
+        actual_x[i] <- X[top_index+OFF_SET ]
+      }
+      ax <- cor(pred_x,actual_x)
+      ay <- cor(pred_y, actual_y)
+      cor_x_tmp[j] <- ax
+      cor_y_tmp[j] <- ay
+    }
+    x_hits[L, ] <<- cor_x_tmp
+    y_hits[L, ] <<- cor_y_tmp
+    cor_x[L] <- median(cor_x_tmp)
+    cor_y[L] <- median(cor_y_tmp)
+  }
+  #Truncate at 0
+  cor_x[cor_x<0] <- 0
+  cor_y[cor_y<0] <- 0
+  return(list(cor_x = cor_x, cor_y = cor_y))
+}
 
-    for(j in 1:rep_count){
-      t_index<-sample(1:(max_l-win_len-1), 1)
-      window <- t_index+ (0:(win_len-1))
-      ds_tmp_x <- ds_x[window,window]       # more place holders
-      ds_tmp_y <- ds_y[window,window]
-      x=sm_x[window,]
-      y=sm_y[window,]
-      nn_tmp_x <- nearest_neighbours(x,ds_tmp_x)
-      nn_tmp_y <- nearest_neighbours(y,ds_tmp_y)
+#' @title Plot Convergent Cross Map
+#' @description Run the convergent Cross Map algorithm and makes a plot
+#' @param X first time series or vector
+#' @param Y second time series or vector of the same length as X
+#' @param tau stepsize of shadow_manifold
+#' @param d dimension of shadow_manifold
+#' @param rep_count number of elements in the bootstrap
+#' @param N1 minimum of length of stretches
+#' @param N2 maximum of length of stratches
+#' @param silent no pprogress reporting from ccm
+#' @param tsName1 name of first vector (for plot)
+#' @param tsName2 idem
+#' @param all plot all intermediate results
+#' @param res if a correlation list, skip the call to ccm
+#' @return the two correlation vectors in a list
+#' @keywords neighbours
+#' @seealso \code{\link{get_nn}}
+#' @examples
+#' # res <- plot_ccm(X, Y)
+#' # res<- plot_ccm(res=res)
 
-      # (3) for each point pair in the random sample get the predictions
-      for(i in 1:win_len){
-        ww <- nn_weights(m=x,dists=ds_tmp_x,index=i,nn=nn_tmp_x)
-        pred_y[i,] <- predict_y(sm.Y=y,wt=ww)
-        actual_y[i,] <- y[i,]
-        ww <- nn_weights(m=y,dists=ds_tmp_y,index=i,nn=nn_tmp_y)
-        pred_x[i,] <- predict_y(sm.Y=x,wt=ww)
-        actual_x[i,] <- x[i,]
+plot_ccm <-
+  function(X, Y, tau = 2, d = 4, rep_count = 25, N1 = 10, N2 = 150,
+           silent = FALSE, tsName1="", tsName2="", all=TRUE, res=NULL, top_count=NULL){
+    if (is.null(res)) res<-ccm(X, Y, tau=tau, d=d, rep_count=rep_count, N1=N1, N2=N2, silent=silent, top_count=top_count)
+    # in future - check library for pretty.plot
+    pretty.init(pal.nr=4)
+    t2= min(round(.5*(N2-N1), 0), rep_count)
+    if (!is.null(top_count)) t2=top_count
+    main.string=sprintf("%s vs %s\ntau= %d, d= %d; nr of samples= %d * %d / slice", tsName1, tsName2, tau, d, rep_count, t2)
+    l1.string=sprintf("%s | %s", tsName2, tsName1)
+    l2.string=sprintf("%s | %s", tsName1, tsName2)
+
+    pretty.plot(ts(res$cor_x, start=N1), ylim=c(0, 1.1)
+                , lwd=2             , ylab="", xlab="", kleur=2, xat=c(10, seq(20,400,20))
+                , main=main.string
+                , ccloc=0)
+    N3=dim(x_hits)[1]
+    N4=dim(x_hits)[2]
+    if (all) {
+      for (L in 1:N3){
+        pretty.plot(add=T, type="p", kleur=5, data.frame(x=rep(L+N1-1, N4), x_hits[L,]), transparent=TRUE)
       }
 
-      # (4) for result of each L-sized random sample, calculate correlation
-      # this has now become become a distance correlation - dcor in package energy
-      ax <- dcor(pred_x,actual_x, index=2)
-      # if(is.na(ax))ax=0                     # only for cor
-      ay <- dcor(pred_y,actual_y, index=2)
-      # if(is.na(ay)) ay=0
-      cor_x_tmp[j]<-ax;  cor_y_tmp[j]<-ay
+      for (L in 1:N3){
+        pretty.plot(add=T, type="p", kleur=10, data.frame(x=rep(L+N1-1, N4), y_hits[L,]), transparent=TRUE)
+      }
     }
+    pretty.plot(ts(res$cor_x, start=N1),add=T, lwd=2, kleur=2)
+    pretty.plot(ts(res$cor_y, start=N1),add=T, lwd=2, kleur=12)
 
-    x_hits[L,]<<-cor_x_tmp
-    y_hits[L,]<<-cor_y_tmp
-    cor_x[L] <- mean(cor_x_tmp)
-    cor_y[L] <- mean(cor_y_tmp)
+    pretty.legend(kleur = c(2,13), legend=c(l1.string, l2.string), lwd=4)
+    res
   }
-  #   cor_x[cor_x<0] <- 0                      #Truncate at 0
-  #   cor_y[cor_y<0] <- 0                     # not needede when dcor, because that is 0<dcor<1
-  #
-  return(list(cor_x=cor_x,cor_y=cor_y))
-}

@@ -4,7 +4,7 @@
 \alias{shadow_manifold}
 \title{Make Shadow manifold}
 \usage{
-shadow_manifold(v, tau = 1, E = 3)
+shadow_manifold(v, tau = 1, E = 4)
 }
 \arguments{
 \item{v}{a a vector containing the observed data}
@@ -14,10 +14,10 @@ shadow_manifold(v, tau = 1, E = 3)
 \item{E}{the dimension}
 }
 \value{
-array - the multi-dimensional vector (v(t), v(t-tau), ... v(t-(E-1)*tau))
+the distance matrix of the shadow manifold
 }
 \description{
-Make Shadow manifold from observed data v with stepsize tau and dimension E.
+Make distance matrix for Shadow manifold of vector v
 }
 \examples{
 #none

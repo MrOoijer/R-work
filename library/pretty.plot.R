@@ -1,47 +1,63 @@
-cpalet1= list( 
-  rand= rgb(0.05,0.05,0.05)
-  , titel=rgb(1,0.8,0)
-  , as= rgb(0.5,0.5,0.5)
-  , box= rgb(0.3,0.3,0.3)
-  , binnen= rgb(0.2,0.2,0.2)
-  , lijnkleur=c("red", "blue", "white", "pink2", "pink4")
-  , vulkleur= c(rgb(1,0,0,0.15)
-                ,rgb(0,0,1,0.2)
-                ,rgb(1,1,1,0.3)
-                ,rgb(165,42,42,40, max=255))
-)
-
-cpalet2= list( 
-  rand="#F3F3F3"
-  , titel="#222277"
-  , as="#777777"
-  , box= "#CCCCCC"
-  , binnen="white"
-  , lijnkleur=c("red", "blue", "brown", "darkgrey", "lightgrey")
-  , vulkleur= c(rgb(1,0,0,0.15)
-                ,rgb(0,0,1,0.2)
-                ,rgb(165,42,42,40, max=255)
-                ,rgb(0.5,0.5,0.5, 0.2)
-                ,rgb(0.5,0.5,0.5, 0.1))
-)
-
-cpalet3= list( 
-  rand="#FDDBC7"
-  , titel="#67001F"
-  , as="#4D4D4D"
-  , box= "#BABABA"
-  , binnen="#FFFFFF"
-  , lijnkleur=c("#67001F", "#B2182B", "#D6604D", "#F4A582", "#FDDBC7")
-  , vulkleur= c("#67001F28"
-                , "#B2182B28"
-                , "#D6604D28"
-                , "#F4A58228"
-                , "#FDDBC728")
-)
-
-
-
-cpalet=cpalet3
+pretty.init<-function(pal.nr=3){
+  
+  cpalet1= list( 
+    rand= rgb(0.05,0.05,0.05)
+    , titel=rgb(1,0.8,0)
+    , as= rgb(0.5,0.5,0.5)
+    , box= rgb(0.3,0.3,0.3)
+    , binnen= rgb(0.2,0.2,0.2)
+    , lijnkleur=c("red", "blue", "white", "pink2", "pink4")
+    , vulkleur= c(rgb(1,0,0,0.15)
+                  ,rgb(0,0,1,0.2)
+                  ,rgb(1,1,1,0.3)
+                  ,rgb(165,42,42,40, max=255))
+  )
+  
+  cpalet2= list( 
+    rand="#F3F3F3"
+    , titel="#222277"
+    , as="#777777"
+    , box= "#CCCCCC"
+    , binnen="white"
+    , lijnkleur=c("red", "blue", "brown", "darkgrey", "lightgrey")
+    , vulkleur= c(rgb(1,0,0,0.15)
+                  ,rgb(0,0,1,0.2)
+                  ,rgb(165,42,42,40, max=255)
+                  ,rgb(0.5,0.5,0.5, 0.2)
+                  ,rgb(0.5,0.5,0.5, 0.1))
+  )
+  
+  cpalet3= list( 
+    rand="#FDDBC7"
+    , titel="#67001F"
+    , as="#4D4D4D"
+    , box= "#BABABA"
+    , binnen="#FFFFFF"
+    , lijnkleur=c("#67001F", "#B2182B", "#D6604D", "#F4A582", "#FDDBC7")
+    , vulkleur= c("#67001F28"
+                  , "#B2182B28"
+                  , "#D6604D28"
+                  , "#F4A58228"
+                  , "#FDDBC728")
+  )
+  
+  cpalet4= list( 
+    rand="#cad4e8"
+    , titel="#8b0000"
+    , as="#d84467"
+    , box= "#ffccdc"
+    , binnen="#fffafa"
+    , lijnkleur=c('#8b0000','#b71c39','#d84467','#f07092','#ff9cb8','#ffccdc',
+                  '#fffafa',
+                  '#cad4e8','#a5abd6','#8481c3','#6359b1','#40319e','#00008b')
+    , vulkleur= c('#8b000028','#b71c3928','#d8446728','#f0709228','#ff9cb828','#ffccdc28',
+                  '#fffafa28',
+                  '#cad4e828','#a5abd628','#8481c328','#6359b128','#40319e28','#00008b28')
+  )
+  
+  if (exists("cpalet")) remove(cpalet, pos=".GlobalEnv")
+  if (pal.nr %in% c(1,2,3,4)) cpalet<<- list(cpalet1, cpalet2, cpalet3, cpalet4)[[pal.nr]]
+}
 
 pretty.legend <-function(
   kleur=c(1,2)
@@ -80,20 +96,26 @@ pretty.plot<-function(df
                       , lty=1
                       , cex=0.5
                       , kleur=1
+                      , transparent=FALSE
                       , ccloc=1
                       , pch=19
                       , add=FALSE
                       , source=NULL
                       , xat = NULL, yat=NULL
+                      , mai=NULL
+                      , palet=2
                       , ...
                       
-){if(class(df) %in% c("ts", "zoo", "xts"))df<-ts.to.df(df)
+){if( ! exists("cpalet")) pretty.init(palet)
+  if(class(df) %in% c("ts", "zoo", "xts"))df<-ts.to.df(df)
   if(add==FALSE){
-    a = 0.6
-    b = 0.55
-    if (xlab == "") a = 0.35
-    if (ylab == "") b = 0.45
-    par(mai= c(a, b, 0.5, 0.2), bg=cpalet$rand)
+    if(is.null(mai)){
+      a = 0.6
+      b = 0.55
+      if (xlab == "") a = 0.35
+      if (ylab == "") b = 0.45
+      par(mai= c(a, b, 0.5, 0.2), bg=cpalet$rand)
+    } else {par(mai= mai, bg=cpalet$rand)}
     a <- xlim
     if (is.null(xlim)){
       # eps<-(max(df[,1])-min(df[,1]))/100
@@ -185,12 +207,16 @@ pretty.plot<-function(df
     
   }
   if (type == "e") return
-  if (type == "p" | type == "h") points(df[,c(1,2)]
-                                        , pch=pch
-                                        , cex=cex
-                                        , lwd=lwd
-                                        , type=type
-                                        , col=cpalet$lijnkleur[kleur])
+  if (type == "p" | type == "h") {
+    t_col= cpalet$lijnkleur[kleur]
+    if (transparent == TRUE) t_col= cpalet$vulkleur[kleur]
+    points(df[,c(1,2)]
+           , pch=pch
+           , cex=cex
+           , lwd=lwd
+           , type=type
+           , col=t_col)
+  }
   if (type == "f") fan.plot(df
                             , lwd = lwd
                             , kleur = kleur

@@ -4,14 +4,10 @@
 \alias{nn_weights}
 \title{Calculate weights}
 \usage{
-nn_weights(m, dists, index, nn)
+nn_weights(dists, nn)
 }
 \arguments{
-\item{m}{a matrix containing a shadow manifold // we don't need it here yet}
-
 \item{dists}{a matrix of euclidian distances between all points on the manifold x}
-
-\item{index}{containing the index of the point in m .}
 
 \item{nn}{a vector of indicies of the nearest neighbours}
 }
@@ -19,13 +15,10 @@ nn_weights(m, dists, index, nn)
 list of weights and indices
 }
 \description{
-Calculate "spatial" weights for each of the (d+1) nearest neighbours
+Calculate "spatial" weights for each of the (E+1) nearest neighbours
 }
 \examples{
 #none
-}
-\seealso{
-\code{\link{get_nn}}
 }
 \keyword{weights}
 

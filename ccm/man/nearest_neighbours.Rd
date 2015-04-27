@@ -4,18 +4,18 @@
 \alias{nearest_neighbours}
 \title{Get nearest neighbours}
 \usage{
-nearest_neighbours(m, dists)
+nearest_neighbours(E, dists)
 }
 \arguments{
-\item{m}{a shadow manifold}
+\item{E}{the dimension of the shadow manifold}
 
-\item{dists}{a matrix of euclidian distances between all points on the manifold x}
+\item{dists}{a one dimensional slices of distances}
 }
 \value{
 vector of indices of the E+1 nearest neighbours
 }
 \description{
-Finds the indicies of the nearest neighbours to a point on a manifold
+Finds the indices of the nearest neighbours to a point on a manifold
 }
 \examples{
 # none

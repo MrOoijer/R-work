@@ -4,7 +4,8 @@
 \alias{ccm}
 \title{Convergent Cross Map}
 \usage{
-ccm(X, Y, tau = 2, d = 4, rep_count = 25, N1 = 10, N2 = 150)
+ccm(X, Y, tau = 2, d = 4, rep_count = 25, N1 = 10, N2 = 100,
+  silent = FALSE)
 }
 \arguments{
 \item{X}{first time series or vector}
