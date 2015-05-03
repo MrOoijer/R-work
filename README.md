@@ -11,4 +11,12 @@ Call to open CBS api plus some examples
 
 ### library
 
-Some routines that should find their way into my own library some day
+Some routines that have found their way into my own library some day
+
+### ccm
+
+Library for the Convergent Cross Mapping Algorithm, both the orinal and a more effcieint bootstrapped version
+
+### myLib
+
+Library to replace the old library directory
