@@ -16,7 +16,7 @@ ccm(X, Y, tau = 2, d = 4, rep_count = 25, N1 = 10, N2 = 100,
 
 \item{d}{dimension of shadow_manifold}
 
-\item{rep_count}{number of slices per stretchlength in the bootstrap}
+\item{rep_count}{number of slices per stretchlength in the bootstrap; if 0 it will use a complete sliding window as library}
 
 \item{N1}{minimum of length of stretches}
 
