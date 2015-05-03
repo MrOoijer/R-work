@@ -22,7 +22,8 @@ tabPanel("Tutorial",
                                       label = "",
                                       choices = c("GISS", "NOAA",
                                                   "HADcrut", "JMA", "C&W", "Combined", "CRUTEM (land)", "GISS (land)"
-                                                  , "RSS (satellite)", "UAH (satellite)", "BEST", "Hadcrut-3"),
+                                                  , "RSS (satellite)", "UAH (satellite)", "BEST", "Hadcrut-3"
+                                                  ,  "UAH (beta 6.0)"),
                                       selected = "GISS")                                                                              
                           , HTML("<div style='border: 1px solid lightgrey; padding:5px;'>")                                             
                           , sliderInput("x.lim2", "Range of years", 1850, 2016, value = c(1880, 2015), round= TRUE, sep="", step=1, ticks=FALSE)                                
@@ -162,7 +163,8 @@ tabPanel("6. All Combined"
                            label = "",
                            choices = c("GISS", "NOAA",
                                        "HADcrut", "JMA", "C&W", "Combined", "CRUTEM (land)", "GISS (land)"
-                                       , "RSS (satellite)", "UAH (satellite)", "BEST", "Hadcrut-3"),
+                                       , "RSS (satellite)", "UAH (satellite)", "BEST", "Hadcrut-3"
+                                       , "UAH (beta 6.0)"),
                            selected = "GISS")                                                                              
                , HTML("<h5>Appearance</h5><div style='border: 1px solid lightgrey; padding:5px;'>")                                             
                , sliderInput("x.lim6", "Range of years", 1850, 2016, value = c(1850, 2015), round= TRUE, sep="", step=1, ticks=FALSE)                                
@@ -220,7 +222,8 @@ well= TRUE, widths = c(3, 9)
                                               label = "",
                                               choices = c("GISS", "NOAA",
                                                           "HADcrut", "JMA", "C&W", "Combined", "CRUTEM (land)", "GISS (land)"
-                                                          , "RSS (satellite)", "UAH (satellite)", "BEST", "Hadcrut-3"),
+                                                          , "RSS (satellite)", "UAH (satellite)", "BEST", "Hadcrut-3"
+                                                          ,  "UAH (beta 6.0)"),
                                               selected = "GISS") 
                               ), wellPanel(
                                 checkboxInput("cbi001", "Viewing Options"),

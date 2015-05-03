@@ -355,6 +355,7 @@ doen<-function(
   if (data.keuze==10) model<-uah.ts
   if (data.keuze==11) model<-bkl.ts
   if (data.keuze==12) model<-hc3.ts
+  if (data.keuze==13) model<-uah.6.ts
   end.y1=end(model)[1]+(end(model)[2]-1)/12
   end.y=min(end.year, end.y1)+0.0001
   yspan=y.lim
@@ -381,9 +382,11 @@ doen<-function(
     pdo<-my.smoother(smooth.way, pdo, smooth.keuze.b)
     vol<-my.smoother(smooth.way, vol, smooth.keuze.b)
   }
-  model.str<-c("GISS", "NOAA", "Hadcrut 4.3", "JMA", "C&W"
-               , "Combined series", "CRUTEM (land only)", "GISS (land only)"
-               , "RSS (satellite)", "UAH (satellite)", "BEST", "Hadcrut 3")[data.keuze]
+  model.str<-c("GISS", "NOAA",
+               "HADcrut", "JMA", "C&W", "Combined", "CRUTEM (land)", "GISS (land)"
+               , "RSS (satellite)", "UAH (satellite)", "BEST", "Hadcrut-3"
+               ,  "UAH (beta 6.0)")[data.keuze]
+  
   year<- as.numeric(time(model))
   
   sh<-sin(pi*year); ch<-cos(pi*year);
