@@ -1,0 +1,8 @@
+Package: myLib
+Type: Package
+Title: My library files
+Version: 1.0
+Date: 2015-04-29
+Authors: Jan van Rongen, j.b.van.rongen@xs4all.nl
+Description: plots with palets
+License: CC
