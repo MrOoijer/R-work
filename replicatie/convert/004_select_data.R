@@ -4,7 +4,7 @@
 # relevant section to the DIS section of exam.
 load("../data/adult_df.Rdata")
 load("../data/youth_df.Rdata")
-load("../data/exam_df.Rdata")
+load("../data/exam_df_select.Rdata")
 
 library(data.table)
 setDF(exam_df)
