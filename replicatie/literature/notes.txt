@@ -1,0 +1,13 @@
+data files
+==========
+https://wwwn.cdc.gov/nchs/nhanes/nhanes3/datafiles.aspx
+
+
+convert a sas data set to csv
+
+proc export data=sashelp.class
+    outfile='c:\temp\sashelp class.csv'
+    dbms=csv
+    replace;
+run;
+

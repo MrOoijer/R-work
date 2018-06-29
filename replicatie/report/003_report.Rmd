@@ -1,0 +1,400 @@
+---
+title: "Analysis of Onyike ea (2003)"
+author: "Jan van Rongen"
+date: '2018-06-28'
+output:
+  pdf_document:
+    number_sections: yes
+    toc: no
+  html_document:
+    df_print: paged
+    toc: no
+version: 3
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(root.dir=
+                        "./")
+options("digits" = 3)
+# require(myLib) # only for debugging
+require(survey)
+require(knitr)
+
+```
+# Summary and conclusions. 
+
+We replicate (or try to replicate ) Onyike e.a. 2003 [1]. Quoting from the abstract:
+
+  _Obesity was associated with past-month depression in women (odds ratio (OR) = 1.82, 95% confidence interval (CI): 1.01, 3.3) but was not significantly associated in men (OR = 1.73, 95% CI: 0.56, 5.37). When obesity was stratified by severity, heterogeneity in the association with depression was observed. Class 3 (severe) obesity (body mass index  > = 40) was associated with past-month depression in unadjusted analyses (OR = 4.98, 95% CI: 2.07, 11.99); the association remained strong after results were controlled for age, education, marital status, physician's health rating, dieting for medical reasons, use of psychiatric medicines, cigarette smoking, and use of alcohol, marijuana, and cocaine._ 
+
+I have been able to replicate most of these results using the `survey` package in R [2] by T. Lumley. See also the book by the same author[3].
+
+Even though the numbers can be reconstructed, I do not like the way those conclusions are drawn. The only BMI-category that is really associated with (past month) depression is the over 40 class. It is a large effect but the precision is low (due to the small subsamples). Other attributes that are definetely associated with depression are gebder:Female and maritial status: Separated. And with the use of psychiatric medicin (not shown).
+
+\vskip 0.2in
+
+```{r echo=FALSE, message= FALSE, warning=FALSE}
+load("../data/df.Rdata")
+nh_design <- svydesign(id=~SDPPSU6, strat=~SDPSTRA6,
+    weight=~weight, data= df , nest=TRUE)
+rep_design <- as.svrepdesign(nh_design, type="JKn")
+
+f1 <-svyglm(depressed ~  bmi_class_2 + sex +marit_class, 
+                  rep_design,  
+                  family=quasibinomial())
+a1 <- exp(cbind(f1$coeff,
+                       confint(f1)))
+a1 <- cbind(round(a1, 2), ifelse(a1[,2] > 1, "*", ""))
+colnames(a1)[1]<- "OR"
+rownames(a1) <- c("", "underweight", "overweight", 
+"obese 30-35", "obese 35-40", "obese 40+", 
+"Female", "Never Married", "Separated etc"
+)
+knitr::kable(a1[-1,], caption= "Depressed odds ratio's (starred when 1.0 outside CI)")
+
+```
+
+\vskip 0.2in
+
+The above table summarize i.m.o. the essence of Onyike et al. article ([1]). These are the estimated odds ratio's for the whole population of the USA (around 1990). 
+
+When categories are "expanded", f.i. all obese classes taken together, we get "watered down" results that might still be significant, but do not contain any new information or insight.  
+
+# Introduction and methods
+
+We replicate most of the results in ([1]). These results are based on data in the NHANES III survey (1988-1994) ([4]).  
+
+Surveys use complex designs in multiple stages for the sampling process. The observations in the sample are not (all) independent. Each observation is weighted in such a way that the sum of the weights is the size of the total population. The wighting process uses known population data on sex, race, age and education. 
+
+Sample weights are not the same as precision weights that can be used in most statistical software for linear models. Parameter estimates will be the same, but estimates for errors will be very different. Thus special software is required.
+
+## Data, structure and characteristics
+
+The survey design parameters are a pseudo PSU with 2 values and a pseudo stratum with 49 values. For this design 52 replication weights are also present in the data. See the first chapters of [3].
+
+These "design" attributes are: 
+
+- "SEQN" is the unique Id,
+- "SDPPSU6" is the pseudoPSU, 
+- "SDPSTRA6" is the pseudo stratum,
+- "WTPXRP" (1-52) are the (Fay) replication weights,
+- "WTPFEX6" (renamed to weigth) is the sample weight
+
+## Standard Error estimates. 
+
+In this type of study there are number of possible techniques to estimate variance. On the one hand there is the direct estimate from the original weights, the so called linear method.
+
+On the other hand using various methods so called replication weights can be constructed and the SE is estimated from them. 
+
+The latter method has (at least) four useful variants: jacknife, bootstrap, BRR and a modified BRR (Fay).
+
+I will compare all 5. The original article seems to use the Jacknife, even though the data contains replication weights for the modified BRR. It is not explained why this was chosen.
+
+Below we compare the different methods for the statement that _Obesity was associated with past-month depression in women (odds ratio (OR) = 1.82, 95% confidence interval (CI): 1.01, 3.3)_ 
+
+```{r message= FALSE, echo=FALSE}
+load("../data/df.Rdata")
+dis_df <- df
+set.seed(1233) # this is a bit cheaky because it lowers the Bootstrap CI
+
+dis_df$obese_ <- dis_df$bmi_class
+
+nh_design_1 <- svydesign(id=~SDPPSU6, strat=~SDPSTRA6,
+    weight=~weight, data= dis_df , nest =TRUE)
+
+nh_design_1 <- subset(nh_design_1, sex== "F")
+
+f1 <-svyglm(depressed ~ obese_ , 
+                  nh_design_1,  
+                  family=quasibinomial())
+a1 <- exp(cbind(f1$coeff, confint(f1)))[4,]
+names(a1)[1]<- "OR"
+df <- data.frame(t(a1), stringsAsFactors = FALSE)
+names(df) <- c("OR", "2.5%", "97.5%")
+
+following <- c("bootstrap", "JKn", "BRR")
+for (f in following){
+  snd_res <- as.svrepdesign(nh_design_1,
+                          type=f)
+  f1 <-svyglm(depressed ~ obese_ , 
+                  snd_res,  
+                  family=quasibinomial())
+  a1 <- exp(cbind(f1$coeff,
+                       confint(f1)))[4,]
+  names(a1)<- names(df)
+  df<- rbind(df, a1)
+
+}
+
+snd_res <- as.svrepdesign(nh_design_1,
+                  type="Fay", fay.rho=0.3)
+f1 <-svyglm(depressed ~ obese_ , 
+                  snd_res,  
+                  family=quasibinomial())
+a1 <- c(exp(cbind(f1$coeff,
+                       confint(f1)))[4,])
+names(a1)<- names(df)
+df<- rbind(df, a1)
+
+# ------
+# make replication design
+repweights <- paste0("WTPXRP", 1:52)
+nonrepweight<-setdiff(colnames(dis_df),
+              repweights)
+rep_design<-svrepdesign(variables=
+              dis_df[, nonrepweight], 
+  repweights=dis_df[, repweights], 
+  combined.weights= TRUE, type="Fay", rho= 0.3, 
+  rscale= 1,
+  weights=dis_df$weight)
+
+rep_design <- subset(rep_design, sex== "F")
+f5 <-svyglm(depressed ~ obese_ , 
+                  rep_design,  
+                  family=quasibinomial())
+
+df<- rbind(df, exp(cbind(f5$coeff, confint(f5)))[4,])
+# ------
+df<- cbind(method= c("linear", following, "Fay", "Fay from data"), df)
+knitr::kable(df, caption="Various CI estimating methods: Obese vs depressed women")
+
+```
+
+Clearly the significance is not so clear at all.
+
+# Replications
+
+There are a number of points to consider when using inference on survey data. The first point is whether there are enough observations. Using sample weights lowers the precision, so a simple power calculation is not enough in itself. 
+
+The second point is which method to use to calculate the SE's and hence the Confidence Intervals. There are many methods and all have their advantages and disadvantages. In a previous paragraph we already compared those methods.
+
+## Data and conversion to a survey design
+
+The NHANES III data was downloaded from the site [4]. The data has been converted using SAS  but also as a check there is also a direct conversion in R. Some of the translation of atributes from NHANES III to those in the article is not always obvious. 
+
+Anyway, after data conversion we build the designs as given by Lumley and others [3]. 
+
+\vskip 0.2in
+
+```{r echo= FALSE}
+load("../data/df.Rdata")
+nh_design <- svydesign(id=~SDPPSU6, strat=~SDPSTRA6,
+    weight=~weight, data= df , nest=TRUE)
+rep_design <- as.svrepdesign(nh_design, type="JKn")
+
+nh_design_2 <- svydesign(id=~SDPPSU6, strat=~SDPSTRA6,
+    weight=~weight, data= df2 , nest=TRUE)
+rep_design_2 <- as.svrepdesign(nh_design_2, type="JKn")
+
+cat("\nData for table 2:", dim(df2)[1], "rows,", dim(df2)[2], "cols")
+cat("\nData for others :", dim(df)[1], "rows,", dim(df)[2], "cols\n")
+
+```
+
+
+## Table 1: only a power test is not enough.
+
+Table 1 contains sizes of classes and from there a beta which is probably meant to be the power of the tests. However in a sample weighted survey the power on the unweighted data is not a very useful measure. In surveys we need more observations for the same precision. See [3] page 6. 
+
+## Table 2: population distribution does not provide much extra information
+
+This table, for some reason, uses a slightly larger dataset than the rest of the analysis. The given SE are percentages, and can be replicated using the jAcknife method. 
+
+Two small examples. In the first we also give the design effect - the decrease in precision caused by the non random sampling:
+
+```{r warning= FALSE, echo=FALSE}
+
+a<- as.data.frame(svymean( ~ sex, rep_design_2, deff=TRUE))
+kable(a)
+
+a<- as.data.frame(svyby(~age_class, 
+                        ~ sex, rep_design_2, svymean))
+kable(t(100*a[, -1]))
+```
+
+
+## Table 3: distribution of BMI_classes versus depressed is missing SE and dEFF
+
+This table firstr gives the number of observations but then uses weights for the percentages. It is an omission not to look at the SE's and the DEFF, because they indicate whether the following inferences will make sense. A strange omission, as table 2 does have the SE's.
+
+The `910` in the table is a typo, should be *981*. 
+
+An example:
+
+\vskip 0.2in
+
+
+```{r message= FALSE, echo=FALSE}
+a<- svyby(~depressed,  ~ bmi_class_2 +  sex, rep_design, svymean, deff= TRUE)
+a[,3:4] <- 100* a[,3:4]
+colnames(a) <- c("BMI", "Sex", "% depressed", "SE", "dEFF")
+kable(a, row.names = FALSE)
+
+a<- svyby(~depressed,  ~ bmi_class +  sex, rep_design, svymean, deff= TRUE)
+a[,3:4] <- 100* a[,3:4]
+colnames(a) <- c("BMI", "Sex", "% depressed", "SE", "dEFF")
+kable(a, row.names = FALSE)
+
+## Note the SE is design dependent:
+
+a<- svyby(~depressed,  ~bmi_class, nh_design, svymean, deff= TRUE)
+a[,2:3] <- 100* a[,2:3]
+colnames(a) <- c("BMI", "% depressed", "SE", "dEFF")
+kable(a, row.names = FALSE)
+
+
+```
+
+
+The standard errors from the above tables (not given in O_2003) indicate that the precision of these means are sometimes low and that most p-values given for this table in [1] must be too small. 
+
+\vskip 0.2in
+
+
+```{r message= FALSE, echo=FALSE}
+
+rep_design_tmp<- update(rep_design, obese_ = bmi_class == "obese")
+a<- svychisq(~depressed+obese_, rep_design_tmp, statistic= "Chisq")
+
+cat("\nP-value (Chi_sq) depressed vs obese:", a$p.value, "\n")
+
+```
+
+## Table 4: we find very different SE's for smaller cases
+
+The survey package has at least seven ways to caluclate the SE's of odds ratio's, but I have not found _one_ method that replicates _all_ results in a consistent way.  As mentioned above, the following results are similar to the JKn method. However there are considerable difference for subsets.
+
+
+
+\vskip 0.2in
+
+```{r echo=FALSE}
+f1 <-svyglm(depressed ~bmi_class_2, 
+                  rep_design,  
+                  family=quasibinomial())
+a <- exp(cbind(f1$coeff, confint(f1)))
+counts <- sapply(levels(df$bmi_class_2), function(s)
+  sum(df$bmi_class_2 == s))
+colnames(a)[1] <- "OR"
+a<- cbind(NR= counts, a)
+rownames(a) <- levels(df$bmi_class_2)
+
+f1 <-svyglm(depressed ~ bmi_class, 
+                  rep_design,  
+                  family=quasibinomial())
+b <- exp(cbind(f1$coeff, confint(f1)))
+counts <- sapply(levels(df$bmi_class), function(s)
+  sum(df$bmi_class == s))
+colnames(b)[1] <- "OR"
+b<- cbind(NR= counts, b)
+
+rownames(b) <- levels(df$bmi_class)
+
+d<- rbind(a[2:3,], obese= b[4, ], a[4:6,])
+knitr::kable(d, caption="All: odds ratios with JKn")
+
+```
+
+Note: only very small differences.
+
+
+```{r message= FALSE, echo=FALSE}
+f1 <-svyglm(depressed ~bmi_class_2, 
+                  subset(rep_design, sex==  "F"),   
+                  family=quasibinomial())
+a <- exp(cbind(f1$coeff, confint(f1)))
+counts <- sapply(levels(df$bmi_class_2), function(s)
+  sum(df$bmi_class_2 == s & df$sex==  "F"))
+colnames(a)[1] <- "OR"
+a<- cbind(NR= counts, a)
+rownames(a) <- levels(df$bmi_class_2)
+
+f1 <-svyglm(depressed ~ bmi_class, 
+                  subset(rep_design, sex==  "F"),    
+                  family=quasibinomial())
+b <- exp(cbind(f1$coeff, confint(f1)))
+counts <- sapply(levels(df$bmi_class), function(s)
+  sum(df$bmi_class == s & df$sex==  "F"))
+colnames(b)[1] <- "OR"
+b<- cbind(NR= counts, b)
+
+rownames(b) <- levels(df$bmi_class)
+
+d<- rbind(a[2:3,], obese= b[4, ], a[4:6,])
+
+knitr::kable(d, caption="Females odds ratio's")
+
+```
+
+Notes: Two classes have 1.28 and 1.75 for odds rate that should be as above 1.32 and 1.84. CI's are the same, so this is a copying error. 
+
+
+```{r message= FALSE, echo=FALSE}
+f1 <-svyglm(depressed ~bmi_class_2, 
+                  subset(rep_design, sex==  "M"),   
+                  family=quasibinomial())
+a <- exp(cbind(f1$coeff, confint(f1)))
+counts <- sapply(levels(df$bmi_class_2), function(s)
+  sum(df$bmi_class_2 == s & df$sex==  "M"))
+colnames(a)[1] <- "OR"
+a<- cbind(NR= counts, a)
+rownames(a) <- levels(df$bmi_class_2)
+
+f1 <-svyglm(depressed ~ bmi_class, 
+                  subset(rep_design, sex==  "M"),    
+                  family=quasibinomial())
+b <- exp(cbind(f1$coeff, confint(f1)))
+counts <- sapply(levels(df$bmi_class), function(s)
+  sum(df$bmi_class == s & df$sex==  "M"))
+colnames(b)[1] <- "OR"
+b<- cbind(NR= counts, b)
+
+rownames(b) <- levels(df$bmi_class)
+
+d<- rbind(a[2:3,], obese= b[4, ], a[4:6,])
+
+knitr::kable(d, caption="Males odds ratio's")
+
+
+```
+
+Notes: big differences in CI for last two classes. 
+
+## Table 5
+
+I have difficulty finding all the extra attributes. Cannot find the medical diet f.i. So decided to use a part of the information.
+
+Lumley [3] discusses in chapter 5.3 the pro's and con's of using weights in this regression. So we compare both and note that the conclusions are the same.
+
+Also note that the "reference person" - a 15-19 year old male, married and poorly educated, with normal BMI, does not occur in the data. 
+
+\vskip 0.2in
+
+
+```{r, message= FALSE, echo=FALSE}
+
+f1<- svyglm(depressed ~ bmi_class_2 + sex + age_class + race + edu_class + marit_class, rep_design, family= quasibinomial)
+a1 <- exp(cbind(f1$coeff, confint(f1)))
+a1 <- cbind(round(a1, 2), ifelse(a1[,2] > 1, "*", ""))
+colnames(a1)[1]<- "OR"
+
+
+f2 <- glm(depressed ~ bmi_class_2 + sex + age_class + race + edu_class + marit_class, data=df, family= quasibinomial)
+a2 <- exp(cbind(f2$coeff, confint(f2)))
+a2 <- cbind(round(a2, 2), ifelse(a2[,2] > 1, "*", ""))
+colnames(a2)[1]<- "OR"
+
+knitr::kable(a1[-1, ], caption= "glm using weights and design")
+knitr::kable(a2[-1, ], caption= "normal glm without weights")
+
+```
+
+# Literature
+
+
+[1] Onyike e.a. _Is obesity associated with major depression?_ (Am J Epidemiol. 2003)    
+[2] http://r-survey.r-forge.r-project.org/survey/    
+[3] Complex Surveys; A Guide to Analysis Using R; Thomas Lumley. ISBN 978-0-470-28430-8, Wiley, 2009.     
+[4] https://wwwn.cdc.gov/nchs/nhanes/nhanes3/Default.aspx    
